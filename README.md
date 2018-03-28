@@ -8,11 +8,11 @@ Our algorithm is described in the paper "Computing Bayes-Nash Equilibria in Comb
 Note: this is a private beta release! If you have been given access to this code, please do not share it further for the moment. The code will be made available publicly together with the definitive version of our paper, sometime in the first half of 2018.
 
 
-== Installation ==
+## Installation
 
 
 
-== Example 1: LLG Quadratic ==
+## Example 1: LLG Quadratic
 
 To demonstrate how to configure our algorithm, we include an example of the LLG domain, where there are two local bidders, each of which has a valuations drawn u.a.r. from [0,1] for one of two distinct items, and a global bidder, with a value drawn u.a.r. from [0,2] for the bundle of both items. The payment rule is quadratic, a.k.a. VCG-nearest.
 
@@ -56,7 +56,7 @@ To actually see what's going on during the algorithm's execution, we implement a
 >		StringBuilder builder = new StringBuilder();
 >		builder.append(String.format("%2d", iteration));
 >		builder.append(String.format(" %7.6f  ", epsilon));
->				
+>
 >		UnivariatePWLStrategy sPWL = (UnivariatePWLStrategy) strategies.get(0);
 >		for (Map.Entry<Double, Double> e : sPWL.getData().entrySet()) {
 >			builder.append(String.format("%7.6f",e.getKey()));
@@ -73,11 +73,11 @@ Finally, we run the algorithm
 
 > bneAlgo.run();
 
-The full example can be found here [TODO: link]. Its output can be visualized using the following Python script [TODO: link]. The computed BNE should look like this:
+The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). Its output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look like this:
 
 [TODO image]
 
-== Implementing your own Auctions ==
+## Implementing your own Auctions
 
 In order to compute an equilibrium for your own domain and payment rule, there are two interfaces you need to implement: a BidSampler and a Mechanism.
 
@@ -88,7 +88,7 @@ This is slightly unintuitive, since one would expect an auction mechanism to con
 
 Note that the BidSampler will want to make use of a random number generator, so you need to make sure that one with the correct dimensionality is added to the context. The dimension will typically be the total number of bundles all bidders except i are interested in.
 
-== Example 2: LLLLGG ==
+## Example 2: LLLLGG
 
 Next, we consider a larger example, where we find a BNE for the first price rule in the LLLLGG domain. This code is very similar to example 1. The main difference is that Values and Bids are multidimensional, implemented as Double[]. The BidSampler and Mechanism implementations are responsible themselves to interpret these arrays of raw data in a consistent way. This domain could also be implemented by writing Java classes representing Values and Bids, but this would make the code slower. All algorithm pieces are provided in a variant supporting multiple dimensions.
 
@@ -99,7 +99,7 @@ The callback function writes out a file representing the strategy at each iterat
 [TODO image]
 
 
-== Example 3: LLG First Price ==
+## Example 3: LLG First Price
 
 As a final example, we want to find a BNE for first price in LLG. This is harder than quadratic from example 1 because the global player is not truthful anymore.
 
@@ -124,7 +124,7 @@ The code can be found here [TODO link] and the script to visualize results is he
 
 
 
-== Beta Notes ==
+## Beta Notes
 
 There are a few thing missing from this beta release that will be added in the public release
 * A generic auction builder, where you only specify the auction topology in an abstract way, and an implementation of the required interfaces is automatically generated.
