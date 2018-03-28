@@ -43,12 +43,12 @@ def plot_BNE(path):
     
     def anim_update(i):
         fig.clear()
-        fig.suptitle(path)
+        fig.suptitle("LLG First Price")
         plt.xlim(0.0, 2.0)
         plt.ylim(0.0, 2.0)
         
-        plt.xticks(np.arange(0, 2.01, 0.05))
-        plt.yticks(np.arange(0, 2.01, 0.05))
+        plt.xticks(np.arange(0, 2.01, 0.1))
+        plt.yticks(np.arange(0, 2.01, 0.1))
         
         xx, yy, zz = data[i]
         plt.plot(xx[:len(xx)//2], yy[:len(xx)//2], "-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True)

@@ -10,6 +10,7 @@ Note: this is a private beta release! If you have been given access to this code
 
 ## Installation
 
+TODO
 
 
 ## Example 1: LLG Quadratic
@@ -118,7 +119,7 @@ Note that we turn off this behaviour in the verification step, so that the epsil
 
 The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_anim_BNE.py). The resulting BNE should look like this:
 
-[TODO image]
+![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
 
 
 

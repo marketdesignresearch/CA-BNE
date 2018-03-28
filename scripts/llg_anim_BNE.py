@@ -45,7 +45,7 @@ def plot_BNE(path):
     
     def anim_update(i):
         fig.clear()
-        fig.suptitle(path)
+        fig.suptitle("LLG")
         plt.xlim(0.0, 1.0)
         plt.ylim(0.0, 1.0)
         
@@ -59,7 +59,7 @@ def plot_BNE(path):
         # analytical BNE
         #xx, yy = data[-1]
         #plt.plot(xx, yy, "-")
-        
+         
     a = anim.FuncAnimation(fig, anim_update, frames=max_iter + 1, repeat=False, interval=300)
     plt.show()
 
