@@ -1,0 +1,97 @@
+package ch.uzh.ifi.ce.cabne.examples;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+
+import ch.uzh.ifi.ce.cabne.BR.ExactGrid2DVerifier;
+import ch.uzh.ifi.ce.cabne.BR.Grid2DBRCalculator;
+import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithm;
+import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithmCallback;
+import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
+import ch.uzh.ifi.ce.cabne.domains.Mechanism;
+import ch.uzh.ifi.ce.cabne.domains.LLLLGG.LLLLGGPayAsBid;
+import ch.uzh.ifi.ce.cabne.domains.LLLLGG.LLLLGGSampler;
+import ch.uzh.ifi.ce.cabne.domains.LLLLGG.LLLLGGStrategyWriter;
+import ch.uzh.ifi.ce.cabne.integration.MCIntegrator;
+import ch.uzh.ifi.ce.cabne.pointwiseBR.MultivariateCrossPattern;
+import ch.uzh.ifi.ce.cabne.pointwiseBR.PatternSearch;
+import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.MultivariateDampenedUpdateRule;
+import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
+import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
+import ch.uzh.ifi.ce.cabne.strategy.Strategy;
+
+
+public class LLLLGGFirstPrice {
+	
+	public static void main(String[] args) throws InterruptedException, IOException {		
+
+		String configfile = args[0];
+		
+		Mechanism<Double[], Double[]> mechanism = new LLLLGGPayAsBid();
+				
+		// create context and read config
+		BNESolverContext<Double[], Double[]> context = new BNESolverContext<>();
+		context.parseConfig(configfile);
+		
+		double targetepsilon = context.getDoubleParameter("epsilon");
+
+		
+		// initialize all algorithm pieces
+		PatternSearch<Double[], Double[]> patternSearch = new PatternSearch<>(context, new MultivariateCrossPattern(2)); 
+		context.setOptimizer(patternSearch);
+		context.setIntegrator(new MCIntegrator<Double[], Double[]>(context));
+		context.setMechanism(mechanism);
+		context.setRng(10, new CommonRandomGenerator(10));
+		context.setSampler(new LLLLGGSampler(context));
+		context.setUpdateRule(new MultivariateDampenedUpdateRule<>(0.2, 0.7, 0.5 / targetepsilon, true));
+		context.setBRC(new Grid2DBRCalculator(context));
+		context.setOuterBRC(new Grid2DBRCalculator(context));
+		context.setVerifier(new ExactGrid2DVerifier(context));
+		
+		
+		LLLLGGStrategyWriter writer = new LLLLGGStrategyWriter();
+		
+		// create callback that prints out player 0's strategy after each iteration
+		BNEAlgorithmCallback<Double[], Double[]> callback = new BNEAlgorithmCallback<Double[], Double[]>() {
+			@Override
+			public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double[], Double[]>> strategies, double epsilon) {	
+				System.out.format("iteration: %d, type %s, epsilon %7.6f\n", iteration, type, epsilon);
+				String s = writer.write((GridStrategy2D) strategies.get(0), (GridStrategy2D) strategies.get(4), iteration);
+				
+				Path outputFile = Paths.get(args[1]).resolve(String.format("iter%03d.strats", iteration));
+
+				try {
+					Files.write(
+						outputFile, s.getBytes(), 
+						StandardOpenOption.CREATE, 
+						StandardOpenOption.WRITE, 
+						StandardOpenOption.TRUNCATE_EXISTING
+					);
+				} catch (IOException e) {
+				}
+			}
+		};
+		
+
+		BNEAlgorithm<Double[], Double[]> bneAlgo = new BNEAlgorithm<>(6, context);
+		bneAlgo.setCallback(callback);
+		
+		// add bidders, giving each an initial strategy and telling the algorithm which ones to update.
+		// bidder 0 (first local bidder) does a best response in each iteration
+		// bidder 1 (second local bidder) plays symmetrically to bidder 0
+		// bidder 2 (global bidder) plays truthful and thus doesn't update his strategy.
+		bneAlgo.setInitialStrategy(0, GridStrategy2D.makeTruthful(1.0, 1.0));
+		bneAlgo.setInitialStrategy(4, GridStrategy2D.makeTruthful(2.0, 2.0));
+
+		bneAlgo.makeBidderSymmetric(1, 0);
+		bneAlgo.makeBidderSymmetric(2, 0);
+		bneAlgo.makeBidderSymmetric(3, 0);
+		bneAlgo.makeBidderSymmetric(5, 4);
+		
+		bneAlgo.run();
+    }
+}
