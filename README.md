@@ -76,7 +76,8 @@ Finally, we run the algorithm
 
 The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). Its output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look like this:
 
-[TODO image]
+
+![LLG Quadratic BNE](misc/plots/LLGQuadratic.png)
 
 ## Implementing your own Auctions
 
@@ -97,7 +98,7 @@ In addition to the first price rule, our code also provides an implementation of
 
 The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look like this:
 
-[TODO image]
+![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
 
 
 ## Example 3: LLG First Price
@@ -117,13 +118,9 @@ To solve this issue, we force the pattern search to stay in a smaller and smalle
 
 Note that we turn off this behaviour in the verification step, so that the epsilon output by the algorithm is computed considering all possible alternative bids.
 
-The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_anim_BNE.py). The resulting BNE should look like this:
+The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_fp_anim_BNE.py). The resulting BNE should look like this:
 
 ![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
-
-
-
-
 
 ## Beta Notes
 
