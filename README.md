@@ -18,60 +18,60 @@ To demonstrate how to configure our algorithm, we include an example of the LLG 
 
 First, we create a "BNESolverContext" object, which will contain all the objects making up our algorithm, and read in a configuration file. This class, as well as almost all other classes, is instanciated with two generic parameters, corresponding to the representation of values and bids.
 
->  BNESolverContext<Double, Double> context = new BNESolverContext<>();
->  String configfile = args[0];
->  context.parseConfig(configfile);
+	  BNESolverContext<Double, Double> context = new BNESolverContext<>();
+	  String configfile = args[0];
+	  context.parseConfig(configfile);
 
 Then, we add all the pieces needed to specify the algorithm, from the way best responses are computed to how the strategies are updated.
 
->  context.setOptimizer(new PatternSearch<Double, Double>(context, new UnivariatePattern()));
->  context.setIntegrator(new MCIntegrator<Double, Double>(context));
->  context.setRng(2, new CommonRandomGenerator(2));
->  context.setUpdateRule(new UnivariateDampenedUpdateRule(0.2, 0.7, 0.5 / context.getDoubleParameter("epsilon"), true));
->  context.setBRC(new AdaptivePWLBRCalculator(context));
->  context.setOuterBRC(new PWLBRCalculator(context));
->  context.setVerifier(new ExactUnivariateVerifier(context));
+	  context.setOptimizer(new PatternSearch<Double, Double>(context, new UnivariatePattern()));
+	  context.setIntegrator(new MCIntegrator<Double, Double>(context));
+	  context.setRng(2, new CommonRandomGenerator(2));
+	  context.setUpdateRule(new UnivariateDampenedUpdateRule(0.2, 0.7, 0.5 / context.getDoubleParameter("epsilon"), true));
+	  context.setBRC(new AdaptivePWLBRCalculator(context));
+	  context.setOuterBRC(new PWLBRCalculator(context));
+	  context.setVerifier(new ExactUnivariateVerifier(context));
 
 Then, we add the objects representing the auction setting
 
->  context.setMechanism(new Quadratic());
->  context.setSampler(new UniformLLGSampler(context));
+	  context.setMechanism(new Quadratic());
+	  context.setSampler(new UniformLLGSampler(context));
 
 We instanciate the BNE algorithm for an auction with 3 players and the given context.
 
->  BNEAlgorithm<Double, Double> bneAlgo = new BNEAlgorithm<>(3, context);
+	  BNEAlgorithm<Double, Double> bneAlgo = new BNEAlgorithm<>(3, context);
 
 We set the initial strategies for the bidders to be truthful. Bidder 1 (the second local bidder) is in a position symmetric to bidder 0 (the first local bidder), so we make him play bidder 0's strategy. The global bidder is known to bid truthful [Beck and Ott, 2013], so we don't update his strategy. This results in the algorithm only updating bidder 0's strategy each round.
 
-> bneAlgo.setInitialStrategy(0, UnivariatePWLStrategy.makeTruthful(0.0, 1.0));
-> bneAlgo.setInitialStrategy(2, UnivariatePWLStrategy.makeTruthful(0.0, 2.0));
-> bneAlgo.makeBidderSymmetric(1, 0);
-> bneAlgo.makeBidderNonUpdating(2);
+	 bneAlgo.setInitialStrategy(0, UnivariatePWLStrategy.makeTruthful(0.0, 1.0));
+	 bneAlgo.setInitialStrategy(2, UnivariatePWLStrategy.makeTruthful(0.0, 2.0));
+	 bneAlgo.makeBidderSymmetric(1, 0);
+	 bneAlgo.makeBidderNonUpdating(2);
 
 To actually see what's going on during the algorithm's execution, we implement a special callback interface that gets invoked after each iteration. In this example, we will just output the intermediate strategies computed for bidder 0, along with the estimated epsilon.
 
-> BNEAlgorithmCallback<Double, Double> callback = new BNEAlgorithmCallback<Double, Double>() {
->	@Override
->	public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double, Double>> strategies, double epsilon) {
->		StringBuilder builder = new StringBuilder();
->		builder.append(String.format("%2d", iteration));
->		builder.append(String.format(" %7.6f  ", epsilon));
->
->		UnivariatePWLStrategy sPWL = (UnivariatePWLStrategy) strategies.get(0);
->		for (Map.Entry<Double, Double> e : sPWL.getData().entrySet()) {
->			builder.append(String.format("%7.6f",e.getKey()));
->			builder.append(" ");
->			builder.append(String.format("%7.6f",e.getValue()));
->			builder.append("  ");
->		}
->		System.out.println(builder.toString());
-> 	}
-> };
-> bneAlgo.setCallback(callback);
+	 BNEAlgorithmCallback<Double, Double> callback = new BNEAlgorithmCallback<Double, Double>() {
+		@Override
+		public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double, Double>> strategies, double epsilon) {
+			StringBuilder builder = new StringBuilder();
+			builder.append(String.format("%2d", iteration));
+			builder.append(String.format(" %7.6f  ", epsilon));
+	
+			UnivariatePWLStrategy sPWL = (UnivariatePWLStrategy) strategies.get(0);
+			for (Map.Entry<Double, Double> e : sPWL.getData().entrySet()) {
+				builder.append(String.format("%7.6f",e.getKey()));
+				builder.append(" ");
+				builder.append(String.format("%7.6f",e.getValue()));
+				builder.append("  ");
+			}
+			System.out.println(builder.toString());
+	 	}
+	 };
+	 bneAlgo.setCallback(callback);
 
 Finally, we run the algorithm
 
-> bneAlgo.run();
+	 bneAlgo.run();
 
 The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). Its output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look like this:
 
@@ -94,7 +94,7 @@ Next, we consider a larger example, where we find a BNE for the first price rule
 
 In addition to the first price rule, our code also provides an implementation of quadratic and other core-selecting payment rules in LLLLGG, but it should be noted that quadratic requires a quadratic program (QP) solver such as CPLEX to be installed.
 
-The callback function writes out a file representing the strategy at each iteration. The code for this example can be found here [TODO: link]. The progress of the algorithm can be visualized with the help of another Python script [TODO: link]. The approximate equilibrium should look like this:
+The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look like this:
 
 [TODO image]
 
@@ -108,15 +108,15 @@ For this example, we've had some issues with oscillating behaviour around the eq
 
 To solve this issue, we force the pattern search to stay in a smaller and smaller neighborhoods around the current strategy as iterations pass. This is implemented by adding a couple lines of code to the callback function, which change the pattern search settings on the fly:
 
-> double temperature = Math.pow(0.7, Math.max(0.0, iteration - 5));
->	if (type != BNEAlgorithm.IterationType.INNER) {
->		temperature = 1.0;
->	}
->	patternSearch.setInitialScale(0.01+0.99*temperature);
+	 double temperature = Math.pow(0.7, Math.max(0.0, iteration - 5));
+		if (type != BNEAlgorithm.IterationType.INNER) {
+			temperature = 1.0;
+		}
+		patternSearch.setInitialScale(0.01+0.99*temperature);
 
 Note that we turn off this behaviour in the verification step, so that the epsilon output by the algorithm is computed considering all possible alternative bids.
 
-The code can be found here [TODO link] and the script to visualize results is here [TODO link]. The resulting BNE should look like this:
+The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_anim_BNE.py). The resulting BNE should look like this:
 
 [TODO image]
 
