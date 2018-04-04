@@ -33,4 +33,9 @@ public class MultivariateCrossPattern extends Pattern<Double[]> {
 		return result;
 	}
 
+	@Override
+	int getCenterIndex(int npoints) {
+		return 0;
+	}
+
 }

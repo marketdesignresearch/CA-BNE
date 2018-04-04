@@ -28,4 +28,9 @@ public class MultivariateGaussianPattern extends Pattern<Double[]> {
 		return result;
 	}
 
+	@Override
+	int getCenterIndex(int npoints) {
+		return 0;
+	}
+
 }

@@ -11,4 +11,6 @@ public abstract class Pattern<Bid> {
 	
 	abstract List<Bid> getPatternPoints(Bid center, int npoints, double scale);
 	
+	abstract int getCenterIndex(int npoints);
+	
 }

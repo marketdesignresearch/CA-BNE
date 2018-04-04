@@ -35,7 +35,7 @@ public class PatternSearch<Value, Bid> extends Optimizer<Value, Bid> {
 		int patternSize = context.getIntParameter("patternsearch.size");
 		double patternscale = context.getDoubleParameter("patternsearch.stepsize") * initialScale;
 		int nSteps = context.getIntParameter("patternsearch.nsteps");
-        
+		
         double[] fxx = new double[patternSize];
         Bid bestbid = currentBid;
         
@@ -62,8 +62,7 @@ public class PatternSearch<Value, Bid> extends Optimizer<Value, Bid> {
             		bestIndex = j;
             	}
             }
-            Bid newBestbid = patternPoints.get(bestIndex); 
-        	if (newBestbid == bestbid) {
+            if (bestIndex == pattern.getCenterIndex(patternSize)) {
         		// hit the center, decrease step size
         		patternscale *= 0.5;
         	} else {
@@ -71,7 +70,7 @@ public class PatternSearch<Value, Bid> extends Optimizer<Value, Bid> {
         		iter++;
         	}
 
-            bestbid = newBestbid;
+            bestbid = patternPoints.get(bestIndex);
         }
         
 		return new Result<>(bestbid, cache.get(bestbid), cache.get(currentBid));

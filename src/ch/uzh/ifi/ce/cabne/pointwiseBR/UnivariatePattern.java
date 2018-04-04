@@ -17,12 +17,17 @@ public class UnivariatePattern extends Pattern<Double> {
 		List<Double> result = new ArrayList<>(npoints);
 		int halfsize = (npoints-1) / 2;
 		for (int x=-halfsize; x<=halfsize; x++) {
-			for (int d=0; d<dimension; d++) {
-				Double patternPoint = Math.max(center + x*scale/halfsize, 0.0);
-				result.add(patternPoint);
-			}
+			Double patternPoint = Math.max(center + x*scale/halfsize, 0.0);
+			result.add(patternPoint);
 		}
 		return result;
 	}
+
+	@Override
+	int getCenterIndex(int npoints) {
+		return (npoints-1) / 2;
+	}
+	
+	
 
 }
