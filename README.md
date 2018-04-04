@@ -74,7 +74,7 @@ Finally, we run the algorithm
 
 	 bneAlgo.run();
 
-The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). Its output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look like this:
+The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). Its output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look something like this:
 
 
 ![LLG Quadratic BNE](misc/plots/LLGQuadratic.png)
@@ -96,7 +96,7 @@ Next, we consider a larger example, where we find a BNE for the first price rule
 
 In addition to the first price rule, our code also provides an implementation of quadratic and other core-selecting payment rules in LLLLGG, but it should be noted that quadratic requires a quadratic program (QP) solver such as CPLEX to be installed.
 
-The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look like this:
+The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
 
 ![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
 
@@ -125,7 +125,7 @@ To solve this issue, we modify the strategies in between iterations. This is imp
 	}
 	strategies.set(1, strategies.get(0));
 
-The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_fp_anim_BNE.py). The resulting BNE should look like this:
+The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_fp_anim_BNE.py). The resulting BNE should look something like this:
 
 ![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
 
