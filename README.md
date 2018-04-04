@@ -38,7 +38,7 @@ Then, we add the objects representing the auction setting
 	  context.setMechanism(new Quadratic());
 	  context.setSampler(new UniformLLGSampler(context));
 
-We instanciate the BNE algorithm for an auction with 3 players and the given context.
+We instantiate the BNE algorithm for an auction with 3 players and the given context.
 
 	  BNEAlgorithm<Double, Double> bneAlgo = new BNEAlgorithm<>(3, context);
 
@@ -103,20 +103,27 @@ The callback function writes out a file representing the strategy at each iterat
 
 ## Example 3: LLG First Price
 
-As a final example, we want to find a BNE for first price in LLG. This is harder than quadratic from example 1 because the global player is not truthful anymore.
+As a final example, we want to find a BNE for the first price rule in LLG. This is harder than the quadratic rule from example 1 because the global player is not truthful anymore.
 
+In order to assist fast convergence, we would like to implement importance sampling in the [bid sampler](src/ch/uzh/ifi/ce/cabne/domains/FirstPriceLLG/FirstPriceLLGSampler.java) for this domain.
+However, to do this we need to be able to invert the strategies, which requires them to be monotone.
+To solve this issue, we modify the strategies in between iterations. This is implemented by adding a couple lines of code to the callback function:
 
-For this example, we've had some issues with oscillating behaviour around the equilibrium that prevents us from converging.
-
-To solve this issue, we force the pattern search to stay in a smaller and smaller neighborhoods around the current strategy as iterations pass. This is implemented by adding a couple lines of code to the callback function, which change the pattern search settings on the fly:
-
-	 double temperature = Math.pow(0.7, Math.max(0.0, iteration - 5));
-		if (type != BNEAlgorithm.IterationType.INNER) {
-			temperature = 1.0;
+	for (int i=0; i<3; i+=2) {
+		UnivariatePWLStrategy s = (UnivariatePWLStrategy) strategies.get(i);
+		SortedMap<Double, Double> data = s.getData();
+		SortedMap<Double, Double> newdata = new TreeMap<>();
+		
+		double previousBid = 0.0;
+		for (Map.Entry<Double, Double> e : data.entrySet()) {
+			double v = e.getKey();
+			double bid = Math.max(previousBid + 1e-6, e.getValue());
+			newdata.put(v, bid);
+			previousBid = bid;
 		}
-		patternSearch.setInitialScale(0.01+0.99*temperature);
-
-Note that we turn off this behaviour in the verification step, so that the epsilon output by the algorithm is computed considering all possible alternative bids.
+		strategies.set(i, new UnivariatePWLStrategy(newdata));
+	}
+	strategies.set(1, strategies.get(0));
 
 The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_fp_anim_BNE.py). The resulting BNE should look like this:
 
