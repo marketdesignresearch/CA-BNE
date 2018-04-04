@@ -8,19 +8,19 @@ import ch.uzh.ifi.ce.cabne.domains.BidSampler;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
 
-
-public class FirstPriceLLGSampler extends BidSampler<Double, Double> {
+public class NoImportanceFirstPriceLLGSampler extends BidSampler<Double, Double> {
 
 	
-	public FirstPriceLLGSampler(BNESolverContext<Double, Double> context) {
+	public NoImportanceFirstPriceLLGSampler(BNESolverContext<Double, Double> context) {
 		super(context);
 	}
 
 	public Iterator<Sample> conditionalBidIterator(int i, Double v, Double b, List<Strategy<Double, Double>> s) {
 		if (i == 2) {
 			Iterator<double[]> rngiter = context.getRng(2).nextVectorIterator();
-			UnivariatePWLStrategy slocal0 = (UnivariatePWLStrategy) s.get(0);
+			Strategy<Double, Double> slocal0 = s.get(0);
 			UnivariatePWLStrategy slocal1 = (UnivariatePWLStrategy) s.get(1);
+			double density = 1.0 / slocal0.getMaxValue() / slocal1.getMaxValue();
 			
 			Iterator<Sample> it = new Iterator<Sample>() {
 				@Override
@@ -34,21 +34,10 @@ public class FirstPriceLLGSampler extends BidSampler<Double, Double> {
 					Double result[] = new Double[3];
 					
 					// bids of local players
-					double density = 1.0 / slocal0.getMaxValue() / slocal1.getMaxValue();
-
-					//double maxlocalbid0 = Math.min(b, slocal0.getBid(slocal0.getMaxValue()));
-					//double maxlocalvalue0 = slocal0.invert(maxlocalbid0);
-					double maxlocalvalue0 = slocal0.getMaxValue();
-					density *= maxlocalvalue0 / slocal0.getMaxValue();
-					result[0] = slocal0.getBid(r[0] * maxlocalvalue0);
-
-					double maxlocalbid1 = Math.max(0.0, Math.min(b - result[0], slocal1.getBid(slocal1.getMaxValue())));
-					double maxlocalvalue1 = slocal1.invert(maxlocalbid1);
-					density *= maxlocalvalue1 / slocal1.getMaxValue();
-					result[1] = slocal1.getBid(r[1] * maxlocalvalue1);
-					 
+					result[0] = slocal0.getBid(r[0] * slocal0.getMaxValue());
+					result[1] = slocal1.getBid(r[1] * slocal1.getMaxValue()); 
 					result[2] = b;
-
+										
 					return new Sample(density, result);
 				}
 			};
@@ -59,6 +48,7 @@ public class FirstPriceLLGSampler extends BidSampler<Double, Double> {
 		Iterator<double[]> rngiter = context.getRng(2).nextVectorIterator();
 		Strategy<Double, Double> slocal = s.get(localopponent);
 		UnivariatePWLStrategy sglobal = (UnivariatePWLStrategy) s.get(2);
+		double density = 1.0 / slocal.getMaxValue() / sglobal.getMaxValue();
 		
 		Iterator<Sample> it = new Iterator<Sample>() {
 			@Override
@@ -73,12 +63,7 @@ public class FirstPriceLLGSampler extends BidSampler<Double, Double> {
 				
 				result[i] = b;
 				result[localopponent] = slocal.getBid(r[0] * slocal.getMaxValue()); 
-				
-				double maxglobalbid = Math.min(b + result[localopponent], sglobal.getBid(sglobal.getMaxValue()));
-				double maxglobalvalue = sglobal.invert(maxglobalbid);
-				double density = maxglobalvalue / sglobal.getMaxValue() / slocal.getMaxValue() / sglobal.getMaxValue();
-				
-				result[2] = sglobal.getBid(r[1] * maxglobalvalue);
+				result[2] = sglobal.getBid(r[1] * sglobal.getMaxValue());
 				
 				return new Sample(density, result);
 			}
