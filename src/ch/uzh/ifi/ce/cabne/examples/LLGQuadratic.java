@@ -45,8 +45,6 @@ public class LLGQuadratic {
 		context.setMechanism(new Quadratic());
 		context.setSampler(new LLGSampler(context));
 		
-		
-
 		BNEAlgorithm<Double, Double> bneAlgo = new BNEAlgorithm<>(3, context);
 		
 		// add bidders, giving each an initial strategy and telling the algorithm which ones to update.

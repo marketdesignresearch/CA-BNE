@@ -12,7 +12,6 @@ import ch.uzh.ifi.ce.cabne.BR.Grid2DBRCalculator;
 import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithm;
 import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithmCallback;
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
-import ch.uzh.ifi.ce.cabne.domains.Mechanism;
 import ch.uzh.ifi.ce.cabne.domains.LLLLGG.LLLLGGPayAsBid;
 import ch.uzh.ifi.ce.cabne.domains.LLLLGG.LLLLGGSampler;
 import ch.uzh.ifi.ce.cabne.domains.LLLLGG.LLLLGGStrategyWriter;
@@ -29,33 +28,42 @@ public class LLLLGGFirstPrice {
 	
 	public static void main(String[] args) throws InterruptedException, IOException {		
 
-		String configfile = args[0];
-		
-		Mechanism<Double[], Double[]> mechanism = new LLLLGGPayAsBid();
-				
 		// create context and read config
 		BNESolverContext<Double[], Double[]> context = new BNESolverContext<>();
+		String configfile = args[0];
 		context.parseConfig(configfile);
 		
 		double targetepsilon = context.getDoubleParameter("epsilon");
 
 		
 		// initialize all algorithm pieces
-		PatternSearch<Double[], Double[]> patternSearch = new PatternSearch<>(context, new MultivariateCrossPattern(2)); 
-		context.setOptimizer(patternSearch);
+		context.setOptimizer(new PatternSearch<>(context, new MultivariateCrossPattern(2)));
 		context.setIntegrator(new MCIntegrator<Double[], Double[]>(context));
-		context.setMechanism(mechanism);
 		context.setRng(10, new CommonRandomGenerator(10));
-		context.setSampler(new LLLLGGSampler(context));
 		context.setUpdateRule(new MultivariateDampenedUpdateRule<>(0.2, 0.7, 0.5 / targetepsilon, true));
 		context.setBRC(new Grid2DBRCalculator(context));
 		context.setOuterBRC(new Grid2DBRCalculator(context));
 		context.setVerifier(new ExactGrid2DVerifier(context));
 		
+		// instanciate auction setting
+		context.setMechanism(new LLLLGGPayAsBid());
+		context.setSampler(new LLLLGGSampler(context));
 		
+		BNEAlgorithm<Double[], Double[]> bneAlgo = new BNEAlgorithm<>(6, context);
 		LLLLGGStrategyWriter writer = new LLLLGGStrategyWriter();
 		
-		// create callback that prints out player 0's strategy after each iteration
+		// add bidders, giving each an initial strategy and telling the algorithm which ones to update.
+		// bidder 0 (first local bidder) does a best response in each iteration
+		// bidder 1 (second local bidder) plays symmetrically to bidder 0
+		// bidder 2 (global bidder) plays truthful and thus doesn't update his strategy.
+		bneAlgo.setInitialStrategy(0, GridStrategy2D.makeTruthful(1.0, 1.0));
+		bneAlgo.setInitialStrategy(4, GridStrategy2D.makeTruthful(2.0, 2.0));
+		bneAlgo.makeBidderSymmetric(1, 0);
+		bneAlgo.makeBidderSymmetric(2, 0);
+		bneAlgo.makeBidderSymmetric(3, 0);
+		bneAlgo.makeBidderSymmetric(5, 4);
+		
+		// create callback that reports epsilon after each iteration
 		BNEAlgorithmCallback<Double[], Double[]> callback = new BNEAlgorithmCallback<Double[], Double[]>() {
 			@Override
 			public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double[], Double[]>> strategies, double epsilon) {	
@@ -75,22 +83,7 @@ public class LLLLGGFirstPrice {
 				}
 			}
 		};
-		
-
-		BNEAlgorithm<Double[], Double[]> bneAlgo = new BNEAlgorithm<>(6, context);
 		bneAlgo.setCallback(callback);
-		
-		// add bidders, giving each an initial strategy and telling the algorithm which ones to update.
-		// bidder 0 (first local bidder) does a best response in each iteration
-		// bidder 1 (second local bidder) plays symmetrically to bidder 0
-		// bidder 2 (global bidder) plays truthful and thus doesn't update his strategy.
-		bneAlgo.setInitialStrategy(0, GridStrategy2D.makeTruthful(1.0, 1.0));
-		bneAlgo.setInitialStrategy(4, GridStrategy2D.makeTruthful(2.0, 2.0));
-
-		bneAlgo.makeBidderSymmetric(1, 0);
-		bneAlgo.makeBidderSymmetric(2, 0);
-		bneAlgo.makeBidderSymmetric(3, 0);
-		bneAlgo.makeBidderSymmetric(5, 4);
 		
 		bneAlgo.run();
     }
