@@ -75,14 +75,13 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
                 }
             }
             
-            int bestIndex = feedback.getMaxIndices().first();  
-            Bid newBestbid = patternPoints.get(bestIndex); 
+            int bestIndex = feedback.getMaxIndices().first(); 
             if (feedback.getStatus() == TestStatus.FAILED) {
             	// decrease pattern size, apply an iteration penalty, but still return the best index we found,
             	// even if it's not statistically significant (otherwise we might get stuck here without ever moving away)
         		patternScale *= 0.25;
         		iter += 1.0;
-            } else if (newBestbid == bestbid) {
+            } else if (bestIndex == pattern.getCenterIndex(patternSize)) {
             		// hit the center, decrease step size
             		patternScale *= 0.5;
             } else {
@@ -90,7 +89,7 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
             		iter += 1.0;
             }
                         
-            bestbid = newBestbid;
+            bestbid = patternPoints.get(bestIndex);
         }
         
 		return new Result<>(bestbid, gatherercache.get(bestbid).getMean(), gatherercache.get(currentBid).getMean());
