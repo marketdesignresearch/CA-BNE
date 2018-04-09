@@ -1,11 +1,19 @@
 # CA-BNE
 
 
-This is a piece of software used for numerically computing approximate Bayes-Nash equilibria (ε-BNEs) of combinatorial auctions. 
+This is a piece of software used for numerically computing approximate Bayes-Nash equilibria (ε-BNEs) of combinatorial auctions. Our algorithm is described in detail in the following paper:
 
-Our algorithm is described in the paper "Computing Bayes-Nash Equilibria in Combinatorial Auctions with Continuous Value and Action Spaces", by Vitor Bosshard, Benedikt Bünz, Benjamin Lubin and Sven Seuken.
+**Computing Bayes-Nash Equilibria in Combinatorial Auctions with Continuous Value and Action Spaces**  
+Vitor Bosshard, Benedikt Bünz, Benjamin Lubin, and Sven Seuken. In Proceedings of the 26th International Joint Conference on Artificial Intelligence (IJCAI), Melbourne, Australia, August 2017.  
+([link](http://www.ifi.uzh.ch/ce/publications/BNE_Bosshard_et_al_IJCAI_2017-long.pdf))
 
-Note: this is a private beta release! If you have been given access to this code, please do not share it further for the moment. The code will be made available publicly together with the definitive version of our paper, sometime in the first half of 2018.
+[Computing Bayes-Nash Equilibria in Combinatorial Auctions with Continuous Value and Action Spaces](http://www.ifi.uzh.ch/ce/publications/BNE_Bosshard_et_al_IJCAI_2017-long.pdf)  
+Vitor Bosshard, Benedikt Bünz, Benjamin Lubin, and Sven Seuken. In Proceedings of the 26th International Joint Conference on Artificial Intelligence (IJCAI), Melbourne, Australia, August 2017.  
+
+
+If you use this software for academic purposes, please cite the above in your work.
+
+Note: this is a private beta release! If you have been given access to this repository, please do not share it further for the moment. The code will be made available publicly together with the definitive version of our paper, sometime in the first half of 2018.
 
 
 ## Installation
@@ -90,24 +98,13 @@ This is slightly unintuitive, since one would expect an auction mechanism to con
 
 Note that the BidSampler will want to make use of a random number generator, so you need to make sure that one with the correct dimensionality is added to the context. The dimension will typically be the total number of bundles all bidders except i are interested in.
 
-## Example 2: LLLLGG
+## Example 2: LLG First Price
 
-Next, we consider a larger example, where we find a BNE for the first price rule in the LLLLGG domain. This code is very similar to example 1. The main difference is that Values and Bids are multidimensional, implemented as Double[]. The BidSampler and Mechanism implementations are responsible themselves to interpret these arrays of raw data in a consistent way. This domain could also be implemented by writing Java classes representing Values and Bids, but this would make the code slower. All algorithm pieces are provided in a variant supporting multiple dimensions.
-
-In addition to the first price rule, our code also provides an implementation of quadratic and other core-selecting payment rules in LLLLGG, but it should be noted that quadratic requires a quadratic program (QP) solver such as CPLEX to be installed.
-
-The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
-
-![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
-
-
-## Example 3: LLG First Price
-
-As a final example, we want to find a BNE for the first price rule in LLG. This is harder than the quadratic rule from example 1 because the global player is not truthful anymore.
+As a second example, we want to find a BNE for the first price rule in LLG. This is harder than the quadratic rule from example 1 because the change in payment rule implies that the global player is not truthful anymore.
 
 In order to assist fast convergence, we would like to implement importance sampling in the [bid sampler](src/ch/uzh/ifi/ce/cabne/domains/FirstPriceLLG/FirstPriceLLGSampler.java) for this domain.
 However, to do this we need to be able to invert the strategies, which requires them to be monotone.
-To solve this issue, we modify the strategies in between iterations. This is implemented by adding a couple lines of code to the callback function:
+To make sure this is the case, we modify the strategies in between iterations. This is implemented by adding a couple lines of code to the callback function:
 
 	for (int i=0; i<3; i+=2) {
 		UnivariatePWLStrategy s = (UnivariatePWLStrategy) strategies.get(i);
@@ -128,6 +125,18 @@ To solve this issue, we modify the strategies in between iterations. This is imp
 The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_fp_anim_BNE.py). The resulting BNE should look something like this:
 
 ![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
+
+## Example 3: LLLLGG
+
+Finally, we consider a much larger example where we find a BNE for the first price rule in the LLLLGG domain. This is a much larger auction than LLG, with 6 bidders and 8 items, but the code is very similar to example 1. The main difference is that Values and Bids are multidimensional, implemented as Double[]. The BidSampler and Mechanism implementations are responsible themselves to interpret these arrays of raw data in a consistent way. This domain could also be implemented by writing Java classes representing Values and Bids, but this would make the code slower. All algorithm pieces are provided in a variant supporting multiple dimensions.
+
+In addition to the first price rule, our code also provides an implementation of quadratic and other core-selecting payment rules in LLLLGG, but it should be noted that quadratic requires a quadratic program (QP) solver such as CPLEX to be installed.
+
+The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
+
+![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
+
+
 
 ## Beta Notes
 
