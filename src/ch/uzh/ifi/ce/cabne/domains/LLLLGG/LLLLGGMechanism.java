@@ -12,9 +12,7 @@ public abstract class LLLLGGMechanism implements Mechanism<Double[], Double[]> {
 		double utility = 0.0;
 		double count = 0.0;
 		for (int[] alloc : wd.solveWD(bids)) {
-			for (int bundle : alloc) {
-				if (bundle/2 == i) utility += v[bundle%2] - bids[i][bundle%2];
-			}
+			utility += computeUtility(i, v, bids, alloc);
 			count++;
 		}
 		
