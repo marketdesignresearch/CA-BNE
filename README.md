@@ -13,7 +13,8 @@ Note: this is a private beta release! If you have been given access to this repo
 
 ## Installation
 
-TODO
+Requires Java 8 (or later). In eclipse, just create a new java project pointing towards the root folder of this repository and everything should compile correctly.
+CPLEX is an optional dependency. The file cplex.jar needs to be added under Project --> Properties --> Java build path, and the location of the CPLEX native extensions needs to be provided to java at runtime (e.g. "java -Djava.library.path=cplex/bin/x86-64_linux ...")
 
 
 ## Example 1: LLG Quadratic
@@ -77,10 +78,11 @@ Finally, we run the algorithm
 
 	 bneAlgo.run();
 
-The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). Its output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look something like this:
-
+The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). It takes as input a path pointing to a configuration file, e.g. [LLG.config](config/LLG.config).
+The output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look something like this:
 
 ![LLG Quadratic BNE](misc/plots/LLGQuadratic.png)
+
 
 ## Implementing your own Auctions
 
@@ -92,6 +94,7 @@ The Mechanism interface implements the mapping from a valuation v_i and a bid pr
 This is slightly unintuitive, since one would expect an auction mechanism to consist of an allocation and a payment rule, with the output of these rules being fed into some explicit utility function. However, the way it is implemented makes sense from a computational perspective. We are avoiding the creation of an expensive object representing the allocation, which in most cases would just be passed to the utility function where it is read once, then destroyed. This way, the class implementing the Mechanism interface is free to internally represent the auction outcome however it sees fit.
 
 Note that the BidSampler will want to make use of a random number generator, so you need to make sure that one with the correct dimensionality is added to the context. The dimension will typically be the total number of bundles all bidders except i are interested in.
+
 
 ## Example 2: LLG First Price
 
@@ -121,16 +124,18 @@ The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java
 
 ![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
 
+
 ## Example 3: LLLLGG
 
 Finally, we consider a much larger example where we find a BNE for the first price rule in the LLLLGG domain. This is a much larger auction than LLG, with 6 bidders and 8 items, but the code is very similar to example 1. The main difference is that Values and Bids are multidimensional, implemented as Double[]. The BidSampler and Mechanism implementations are responsible themselves to interpret these arrays of raw data in a consistent way. This domain could also be implemented by writing Java classes representing Values and Bids, but this would make the code slower. All algorithm pieces are provided in a variant supporting multiple dimensions.
 
 In addition to the first price rule, our code also provides an implementation of quadratic and other core-selecting payment rules in LLLLGG, but it should be noted that quadratic requires a quadratic program (QP) solver such as CPLEX to be installed.
 
-The callback function writes out a file representing the strategy at each iteration. The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java). The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
+The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java).
+It takes two arguments, a configuration file and an output folder, where the callback function writes out one file per iteration. 
+The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
 
 ![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
-
 
 
 ## Beta Notes
