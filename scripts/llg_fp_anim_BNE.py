@@ -51,13 +51,15 @@ def plot_BNE(path):
         plt.yticks(np.arange(0, 2.01, 0.1))
         
         xx, yy, zz = data[i]
-        plt.plot(xx[:len(xx)//2], yy[:len(xx)//2], "-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True)
-        plt.plot(xx, zz, "-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True)
+        plt.plot(xx[:len(xx)//2], yy[:len(xx)//2], "-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True, label="Local Players")
+        plt.plot(xx, zz, "-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True, label="Global Player")
         #plt.plot(xx, yy, ".-")
         
         # analytical BNE
         #xx, yy = data[-1]
         #plt.plot(xx, yy, "-")
+        
+        plt.legend(loc='upper left')
         
 
     a = anim.FuncAnimation(fig, anim_update, frames=max_iter + 1, repeat=False, interval=300)

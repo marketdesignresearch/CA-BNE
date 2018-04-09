@@ -28,7 +28,7 @@ class MySubplot(object):
         self.y = {}
         for k,v in data.items():
             n = len(v)
-            self.x[k] = np.kron(np.ones((1,n)), np.matrix(np.linspace(0.0, 1.0, n)).T)
+            self.x[k] = np.kron(np.ones((1,n)), np.matrix(np.linspace(zlim[0], zlim[1], n)).T)
             self.y[k] = self.x[k].T
         
         # parameters are elevation and azimuth (in degrees, not radians)
@@ -95,13 +95,12 @@ class Main(object):
                     players.append([])
                     continue
                 players[-1].append([float(i) for i in numbers])
-            # add data for other global player
+            # add data for global player's other strategy
             players.append(list(zip(*players[-1])))
        
         self.data[int(iteration)] = players
         
     def anim(self):
-       
         myplots = []
         fig = plt.figure(figsize=(16,12))
         

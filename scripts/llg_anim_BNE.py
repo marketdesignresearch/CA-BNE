@@ -53,7 +53,7 @@ def plot_BNE(path):
         plt.yticks(np.arange(0, 1.01, 0.05))
         
         xx, yy = data[i]
-        plt.plot(xx, yy, ".-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True)
+        plt.plot(xx, yy, "-", clip_box=mpl.transforms.Bbox([[0,0],[0.1,0.3]]), clip_on=True)
         #plt.plot(xx, yy, ".-")
         
         # analytical BNE
