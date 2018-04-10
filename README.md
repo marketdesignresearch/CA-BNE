@@ -125,6 +125,8 @@ The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java
 
 ![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
 
+Note that the bump seen in the strategy of the global player at valuations around 0.5 is not a numerical error, but a stable equilibrium feature.
+
 
 ## Example 3: LLLLGG
 
@@ -138,6 +140,7 @@ The progress of the algorithm can be visualized with the help of another [Python
 
 ![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
 
+Note that this figure was generated in a distributed way on our compute cluster. The [example parameters](config/LLLLGG.config) we provide should run single-threaded on a laptop in a reasonable amount of time, and produce a similar equilibrium at a lower resolution.
 
 ## Beta Notes
 
