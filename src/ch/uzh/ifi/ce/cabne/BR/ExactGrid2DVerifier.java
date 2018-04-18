@@ -66,12 +66,15 @@ public class ExactGrid2DVerifier implements Verifier<Double[], Double[]> {
 						maxValue[1] * ((double) k) / (gridsize)
 						};
 				
-				// NOTE: it's extremely important that the strategy lookup of the equilibrium bid is done using s and
-				// not sPWC.
-				// Grid strategies can have tiny numerical errors, and if we look up the exact bottom-left point of a 
-				// segment, the lookup might miss and return the next lower bid level, which is significantly lower, 
-				// thus amplifying the numerical error by orders of magnitude.
-				Double[] equilibriumBid = s.get(i).getBid(value);
+				// NOTE: it's important that the strategy lookup of the equilibrium bid is done using the original piecewise
+				// linear strategy given by si, and not the modified piecewise constant strategy s.get(i)
+				// If we look up the exact bottom-left point of a segment of a PWC strategy, we might miss it due to limited
+				// numerical precision and land on an adjacent segment, which is significantly lower.
+				// This amplifies the numerical error disproportionately.
+				// In contrast, an error in the lookup of a PWL strategy tends to be better behaved. More importantly, since we
+				// are doing the exact same strategy lookup here and in the convertStrategy method of this class, the bids we
+				// get should be identical.
+				Double[] equilibriumBid = si.getBid(value);
 				Optimizer.Result<Double[]> result = context.optimizer.findBR(i, value, equilibriumBid, s);
 				results.get(j).put(k, result);
 
