@@ -40,18 +40,18 @@ public class PatternSearch<Value, Bid> extends Optimizer<Value, Bid> {
         Bid bestbid = currentBid;
         
         // cache the expected utilities to save on computation.
-        Map<Bid, Double> cache = new Hashtable<>();
+        Map<String, Double> cache = new Hashtable<>();
 
         for (int iter=0; iter<nSteps; iter++) {
         	List<Bid> patternPoints = pattern.getPatternPoints(bestbid, patternSize, patternscale);
         	for (int j=0; j<patternSize; j++) {
         		Bid bid = patternPoints.get(j);
 
-            	if (cache.containsKey(bid)) {
-            		fxx[j] = cache.get(bid);
+        		if (cache.containsKey(pattern.bidHash(bid))) {
+        			fxx[j] = cache.get(pattern.bidHash(bid));
             	} else {
             		double util = context.integrator.computeExpectedUtility(i, v, bid, strats);
-            		cache.put(bid, util);
+            		cache.put(pattern.bidHash(bid), util);
             		fxx[j] = util;
             	}
             }
@@ -69,10 +69,9 @@ public class PatternSearch<Value, Bid> extends Optimizer<Value, Bid> {
         		// give less iterations as budget if the pattern is moving (each moving step consumes 2 iterations)
         		iter++;
         	}
-
             bestbid = patternPoints.get(bestIndex);
         }
         
-		return new Result<>(bestbid, cache.get(bestbid), cache.get(currentBid));
+        return new Result<>(bestbid, cache.get(pattern.bidHash(bestbid)), cache.get(pattern.bidHash(currentBid)));
 	}
 }

@@ -37,5 +37,14 @@ public class MultivariateCrossPattern extends Pattern<Double[]> {
 	int getCenterIndex(int npoints) {
 		return 0;
 	}
+	
+	@Override
+	protected String bidHash(Double[] key) {
+		StringBuilder builder = new StringBuilder();
+		for (int x=0; x<key.length; x++) {
+			builder.append(String.format("%9.6f|", key[x]));
+		}
+		return builder.toString();
+	}
 
 }

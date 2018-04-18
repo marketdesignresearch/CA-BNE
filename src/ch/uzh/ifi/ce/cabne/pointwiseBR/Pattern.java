@@ -13,4 +13,8 @@ public abstract class Pattern<Bid> {
 	
 	abstract int getCenterIndex(int npoints);
 	
+	String bidHash(Bid b) {
+		return b.toString();
+	}
+	
 }
