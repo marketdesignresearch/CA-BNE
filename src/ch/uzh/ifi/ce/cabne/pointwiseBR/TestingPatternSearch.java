@@ -35,7 +35,7 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
         Bid bestbid = currentBid;
                 
         List<NonCombiningCachingSampleGatherer> gatherers = new ArrayList<>(patternSize);
-        Map<Bid, NewCAGatherer<Value, Bid>> gatherercache = new Hashtable<>();
+        Map<String, NewCAGatherer<Value, Bid>> gatherercache = new Hashtable<>();
         
         // initialize arrays
         for (int j=0; j<patternSize; j++) {
@@ -49,12 +49,12 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
         	// initialize gatherers, recycle from previous pattern steps if possible
         	for (int j=0; j<patternSize; j++) {
             	Bid bid = patternPoints.get(j);
-            	if (gatherercache.containsKey(bid)) {
-            		gatherers.set(j, gatherercache.get(bid));
+            	if (gatherercache.containsKey(pattern.bidHash(bid))) {
+            		gatherers.set(j, gatherercache.get(pattern.bidHash(bid)));
             	} else {
             		NewCAGatherer<Value, Bid> g = new NewCAGatherer<>(context, i, v, bid, strats);
             		g.computeMoreSamples(minsamples);
-            		gatherercache.put(bid, g);
+            		gatherercache.put(pattern.bidHash(bid), g);
             		gatherers.set(j, g);
             	}
             }
@@ -79,8 +79,8 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
             if (feedback.getStatus() == TestStatus.FAILED) {
             	// decrease pattern size, apply an iteration penalty, but still return the best index we found,
             	// even if it's not statistically significant (otherwise we might get stuck here without ever moving away)
-        		patternScale *= 0.25;
-        		iter += 1.0;
+        		patternScale *= 0.5;
+        		//iter += 1.0;
             } else if (bestIndex == pattern.getCenterIndex(patternSize)) {
             		// hit the center, decrease step size
             		patternScale *= 0.5;
@@ -92,6 +92,6 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
             bestbid = patternPoints.get(bestIndex);
         }
         
-		return new Result<>(bestbid, gatherercache.get(bestbid).getMean(), gatherercache.get(currentBid).getMean());
+		return new Result<>(bestbid, gatherercache.get(pattern.bidHash(bestbid)).getMean(), gatherercache.get(pattern.bidHash(currentBid)).getMean());
 	}
 }
