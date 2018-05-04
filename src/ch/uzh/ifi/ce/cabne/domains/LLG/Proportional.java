@@ -13,7 +13,10 @@ public class Proportional implements Mechanism<Double, Double> {
 				
 		if (i==2) {
 			// utility of global player
-			return Math.max(bids[2] - bids[1] - bids[0], 0.0);
+			if (bids[2] > bids[0] + bids[1]) {
+				return v - bids[1] - bids[0];
+			}
+			return 0.0;
 		} else if (bids[2] > bids[0] + bids[1]) {
         	// global player wins
             return 0.0;
