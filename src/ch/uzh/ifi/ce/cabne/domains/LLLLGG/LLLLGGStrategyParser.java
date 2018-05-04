@@ -31,6 +31,7 @@ public class LLLLGGStrategyParser {
             lines.remove(0);
         }
         int matrixDim = (lines.size() - 4) / 3;
+        //int matrixDim = (lines.size() - 3) / 4;
         List<String[]> leftLines = lines.subList(1, 2 + matrixDim);
         List<String[]> rightLines = lines.subList(3 + matrixDim, 4 + matrixDim * 2);
         List<String[]> globalLines = lines.subList(5 + matrixDim * 2, lines.size());

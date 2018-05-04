@@ -21,6 +21,8 @@ public class LLLLGGProxy extends LLLLGGMechanism {
 	}
 	
 	public double[] projectToCore(Double[][] bids, int[] alloc) {
+		int winners = encodeWinners(alloc); // bit array used to quickly discard irrelevant coalitions
+		
 		int[] activeBidders = new int[6];
 		List<Double> sortedBids = new ArrayList<>();
 		sortedBids.add(0.0);
@@ -31,8 +33,6 @@ public class LLLLGGProxy extends LLLLGGMechanism {
 			sortedBids.add(bid);
 		}
 		sortedBids.sort(null);
-		
-		int winners = encodeWinners(alloc); // bit array used to quickly discard irrelevant coalitions
 
 		double[] currentPoint = new double[6];
 		int m = 0; // inner loop variable, which should *not* be reset when we enter the loop.
@@ -105,7 +105,7 @@ public class LLLLGGProxy extends LLLLGGMechanism {
 			for (int bundle : alloc) {
 				int i = bundle/2;
 				currentPoint[i] += activeBidders[i] * highestMultiplier;
-				if (sortedBids.get(j+1) == bids[i][bundle%2]) {
+				if (sortedBids.get(j+1).equals(bids[i][bundle%2])) {
 					activeBidders[i] = 0; 
 				}
 			}

@@ -17,7 +17,12 @@ public class LLLLGGProportional extends LLLLGGMechanism {
 		}
 		// HACK: if utility is somehow smaller than 0, (i.e. - infinity), just return 0
 		// TODO: investigate this, possibly caused by scalarProd being 0?
-		utility = Math.max(0.0, utility);
+		if (Double.isNaN(utility)) {
+			utility = 0.0;
+		}
+		if (Math.abs(utility) > 1000.) {
+			utility = 0.0;
+		}
 		return utility;
 	}
 	

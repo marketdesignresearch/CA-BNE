@@ -21,7 +21,7 @@ public abstract class LLLLGGMechanism implements Mechanism<Double[], Double[]> {
 	
 	// This class handles winner determination and ties. Subclasses just need to implement the utility given a specific
 	// allocation.
-	protected abstract double computeUtility(int i, Double[] v, Double[][] bids, int[] alloc);
+	public abstract double computeUtility(int i, Double[] v, Double[][] bids, int[] alloc);
 	
 	
 	
