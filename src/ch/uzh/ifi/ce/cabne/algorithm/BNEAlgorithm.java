@@ -162,7 +162,7 @@ public class BNEAlgorithm<Value, Bid> {
 			context.activateConfig("outerloop");
 			brc = context.outerBRC;
 			if (brc == null) {
-				brc = context.brc;
+				return;
 			}
 			
 			highestEpsilon = computeBestResponse(strategies, brc);
@@ -179,6 +179,9 @@ public class BNEAlgorithm<Value, Bid> {
 		boolean converged = highestEpsilon <= targetEpsilon;
 		if (converged) {
 			context.activateConfig("verificationstep");
+			if (context.verifier == null) {
+				return;
+			}
 
 			highestEpsilon = verify(strategies, context.verifier);
 
