@@ -80,7 +80,7 @@ Finally, we run the algorithm
 	 bneAlgo.run();
 
 The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). It takes as input a path pointing to a configuration file, e.g. [LLG.config](config/LLG.config).
-The output can be visualized using the following [Python script](scripts/llg_anim_BNE.py). The computed BNE should look something like this:
+The output can be visualized using the following [Python script](misc/scripts/llg_anim_BNE.py). The computed BNE should look something like this:
 
 ![LLG Quadratic BNE](misc/plots/LLGQuadratic.png)
 
@@ -121,7 +121,7 @@ To make sure this is the case, we modify the strategies in between iterations. T
 	}
 	strategies.set(1, strategies.get(0));
 
-The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](scripts/llg_fp_anim_BNE.py). The resulting BNE should look something like this:
+The code can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGFirstPrice.java) and the script to visualize results is [here](misc/scripts/llg_fp_anim_BNE.py). The resulting BNE should look something like this:
 
 ![LLG First Price BNE](misc/plots/LLGFirstPrice.png)
 
@@ -136,7 +136,7 @@ In addition to the first price rule, our code also provides an implementation of
 
 The code for this example can be found  [here](src/ch/uzh/ifi/ce/cabne/examples/LLLLGGFirstPrice.java).
 It takes two arguments, a configuration file and an output folder, where the callback function writes out one file per iteration. 
-The progress of the algorithm can be visualized with the help of another [Python script](scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
+The progress of the algorithm can be visualized with the help of another [Python script](misc/scripts/llllgg_anim_BNE.py). The approximate equilibrium should look something like this:
 
 ![LLLLGG First Price BNE](misc/plots/LLLLGGFirstPrice.png)
 
