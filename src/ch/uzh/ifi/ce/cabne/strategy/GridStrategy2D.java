@@ -16,12 +16,19 @@ public class GridStrategy2D implements Strategy<Double[], Double[]> {
     
     private Double[] maxValue;
     
+    protected double[][] leftData;
+    protected double[][] rightData;
+    
+    
     public GridStrategy2D(RealMatrix leftIntervals, RealMatrix rightIntervals, double maxV1, double maxV2) {
     	this.leftIntervals = leftIntervals;
         this.rightIntervals = rightIntervals;
         this.rowInterval = maxV1 / (leftIntervals.getRowDimension() - 1);
         this.columnInterval = maxV2 / (leftIntervals.getColumnDimension() - 1);
         this.maxValue = new Double[] {maxV1, maxV2};
+        this.leftData = leftIntervals.getData();
+        this.rightData = rightIntervals.getData();
+        
     }
     
     public GridStrategy2D(RealMatrix leftIntervals, RealMatrix rightIntervals) {
@@ -29,31 +36,31 @@ public class GridStrategy2D implements Strategy<Double[], Double[]> {
     }
 
     public Double[] getBid(Double[] v) {
-        double leftStrategy = computeStrategy(v[0], v[1], leftIntervals);
-        double rightStrategy = computeStrategy(v[0],v[1], rightIntervals);
+        double leftStrategy = computeStrategy(v[0], v[1], leftData);
+        double rightStrategy = computeStrategy(v[0],v[1], rightData);
         return new Double[]{leftStrategy, rightStrategy};
     }
 
-    private double computeStrategy(double x, double y, RealMatrix intervals) {
+    private double computeStrategy(double x, double y, double[][] intervals) {
     	// TODO: this needs to deal with out-of-bounds queries
     	
         int rowIndex = (int) (x / rowInterval);
         int columnIndex = (int) (y / columnInterval);
-        int upperRow = Math.min(rowIndex + 1, intervals.getRowDimension() - 1);
-        int upperColumn = Math.min(columnIndex + 1, intervals.getColumnDimension() - 1);
+        int upperRow = Math.min(rowIndex + 1, intervals.length - 1);
+        int upperColumn = Math.min(columnIndex + 1, intervals[0].length - 1);
         
-        double lowerLeftStrategy = intervals.getEntry(rowIndex, columnIndex);
-        double upperRightStrategy = intervals.getEntry(upperRow, upperColumn);
+        double lowerLeftStrategy = intervals[rowIndex][columnIndex];
+        double upperRightStrategy = intervals[upperRow][upperColumn];
         double rowDiff = x - rowIndex * rowInterval;
         double columnDiff = y - columnIndex * columnInterval;
         double xComponentStrategy = rowDiff / rowInterval;
         double yComponentStrategy = columnDiff / columnInterval;
         if (rowDiff > columnDiff) {
-            double cornerStrategy = intervals.getEntry(upperRow, columnIndex);
+            double cornerStrategy = intervals[upperRow][columnIndex];
             xComponentStrategy *= (cornerStrategy - lowerLeftStrategy);
             yComponentStrategy *= (upperRightStrategy - cornerStrategy);
         } else {
-            double cornerStrategy = intervals.getEntry(rowIndex, upperColumn);
+            double cornerStrategy = intervals[rowIndex][upperColumn];
             xComponentStrategy *= (upperRightStrategy - cornerStrategy);
             yComponentStrategy *= (cornerStrategy - lowerLeftStrategy);
         }
