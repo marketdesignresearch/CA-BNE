@@ -19,7 +19,9 @@ public class AusubelBaranovLLGSampler extends BidSampler<Double, Double> {
 	public Iterator<Sample> conditionalBidIterator(int i, Double v, Double b, List<Strategy<Double, Double>> s) {		
 		// NOTE: this assumes that global bidder plays truthful, which is only the case with a core-selecting rule.
 		// It's not enough to add a separate code path for i == 2 to make it work for a strategic global bidder.
-		assert i == 0 | i == 1;
+		if (i == 2) {
+			throw new RuntimeException("This sampler assumes that the global player is truthful.");
+		}
 		
 		Iterator<double[]> rngiter = context.getRng(2).nextVectorIterator();
 		Iterator<double[]> rngitercorr = context.getRng(1).nextVectorIterator();
