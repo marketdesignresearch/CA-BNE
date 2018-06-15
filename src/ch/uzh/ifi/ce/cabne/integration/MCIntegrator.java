@@ -38,6 +38,29 @@ public class MCIntegrator<Value, Bid> extends Integrator<Value, Bid> {
 				throw new RuntimeException();
 			}
 		}
+		
+		// multiply result by integration volume
+		// TODO: this would be cleaner if it was handled by separate classes explicitly 
+		// extending Integrator<Value, Double> and Integrator<Value, Double[]>
+		if (b instanceof Double) {
+			for (int j=0; j<strats.size(); j++) {
+				if (j==i) continue;
+				Double maxval = (Double) strats.get(j).getMaxValue();
+				result *= maxval;
+			}
+			
+		} else if (b instanceof Double[]) {
+			for (int j=0; j<strats.size(); j++) {
+				if (j==i) continue;
+				Double[] maxval = (Double[]) strats.get(j).getMaxValue();
+				for (int k=0; k<maxval.length; k++) {
+					result *= maxval[k];
+				}
+			}
+			
+		} else {
+			throw new RuntimeException("MCIntegrator does not support this type of Value");
+		}
 
 		return result / nsamples;
 	}
