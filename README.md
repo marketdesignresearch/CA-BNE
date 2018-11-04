@@ -8,8 +8,6 @@ Vitor Bosshard, Benedikt Bünz, Benjamin Lubin, and Sven Seuken. In Proceedings 
 
 If you use this software for academic purposes, please cite the above in your work.
 
-Note: this is a private beta release! If you have been given access to this repository, please do not share it further for the moment. The code will be made available publicly together with the definitive version of our paper, sometime in the first half of 2018.
-
 
 ## Installation
 
@@ -144,7 +142,7 @@ Note that this figure was generated in a distributed way on our compute cluster.
 
 ## Beta Notes
 
-There are a few things missing from this beta release that will be added in the public release
+There are a few things missing from this beta release.
 * A generic auction builder, where you only specify the auction topology in an abstract way, and an implementation of the required interfaces is automatically generated.
 * The full code used to run the experiments in our paper.
 * The scripts we used to distribute the running of the algorithm over our compute cluster. While this only runs on our hardware, it demonstrates how to implement a parallel version of the BNEAlgorithm class.
