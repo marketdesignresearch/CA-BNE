@@ -3,14 +3,18 @@ package ch.uzh.ifi.ce.cabne.randomsampling;
 import java.util.Iterator;
 
 
-import org.apache.commons.math3.random.RandomVectorGenerator;
 import org.apache.commons.math3.random.SobolSequenceGenerator;
 
 public class QuasiRandomGenerator implements RandomGenerator {
-	RandomVectorGenerator generator;
+	SobolSequenceGenerator generator;
 
 	public QuasiRandomGenerator(int dimension) {
 		generator = new SobolSequenceGenerator(dimension);
+	}
+
+	public QuasiRandomGenerator(int dimension, int skip) {
+		this(dimension);
+		generator.skipTo(skip);
 	}
 
 	@Override
