@@ -77,38 +77,45 @@ public class BNESolverContext<Value, Bid> {
 		HashMap<String, String> config = new HashMap<>();
 		while (input.hasNext()) {
 			String key = input.next().toLowerCase();
-			String value = input.next();
+			String value = input.next().trim();
 			config.put(key, value);
 		}
 		input.close();
 		this.config = config;
 	}
 	
-	
-
 	public int getIntParameter(String name) {
-		return Integer.parseInt(config.get(name.toLowerCase()));
+		return Integer.parseInt(getParameter(name));
 	}
 
 	public double getDoubleParameter(String name) {
-		return Double.parseDouble(config.get(name.toLowerCase()));
+		return Double.parseDouble(getParameter(name));
 	}
 	
 	public String getStringParameter(String name) {
-		return config.get(name.toLowerCase()).trim();
+		return getParameter(name);
 	}
 	
 	public boolean getBooleanParameter(String name) {
-		name = name.toLowerCase();
-		String value = hasParameter(name) ? config.get(name).trim() : "false";
+		// Returns true if parameter "name" is present in config file and set to
+		// either "true" (case insensitive) or "1".
+		// Returns false if "name" is set to anything else or not present in config file.
+		// Never throws an exception.
+		String value = hasParameter(name) ? getParameter(name) : "false";
 		return Boolean.parseBoolean(value) || (value.equals("1"));
 	}
 	
 	public boolean hasParameter(String name) {
-		return config.containsKey(name);
+		return config.containsKey(name.toLowerCase());
 	}
 	
-	// TODO: better name for this
+	private String getParameter(String name) {
+		if (!config.containsKey(name.toLowerCase())) {
+			throw new RuntimeException(String.format("Parameter '%s' not found in config", name));
+		}
+		return config.get(name.toLowerCase());
+	}
+
 	public void activateConfig(String prefix) {
 		// Copies everything with a given prefix to the top level. This allows toggling between different "subconfigs".
 		// e.g. with prefix="InnerLoop", InnerLoop.PatternSearch.Stepsize becomes PatternSearch.Stepsize
