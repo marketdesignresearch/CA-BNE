@@ -23,7 +23,7 @@ public class MCIntegrator<Value, Bid> extends Integrator<Value, Bid> {
 
 	@Override
 	public double computeExpectedUtility(int i, Value v, Bid b, List<Strategy<Value, Bid>> strats) {
-		int nsamples = Integer.parseInt(context.config.get("mcsamples"));
+		int nsamples = context.getIntParameter("mcsamples");
 		double result = 0.0;
 		
 		Iterator<BidSampler<Value, Bid>.Sample> biditer = context.sampler.conditionalBidIterator(i, v, b, strats);
