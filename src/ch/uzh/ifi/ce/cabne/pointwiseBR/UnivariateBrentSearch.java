@@ -35,7 +35,7 @@ public class UnivariateBrentSearch extends Optimizer<Double, Double> {
 				}
 		);
 		
-		UnivariatePointValuePair optimum = optimizer.optimize(new MaxEval(500), objectiveFunction, GoalType.MAXIMIZE, 
+		UnivariatePointValuePair optimum = optimizer.optimize(new MaxEval(50), objectiveFunction, GoalType.MAXIMIZE,
 													          new SearchInterval(0.0, 2.0*currentBid, currentBid));
 		
 		
