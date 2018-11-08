@@ -33,8 +33,8 @@ public class LLGFirstPrice {
 		context.parseConfig(configfile);
 		
 		// initialize all algorithm pieces
-		context.setOptimizer(new PatternSearch<Double, Double>(context, new UnivariatePattern()));
-		context.setIntegrator(new MCIntegrator<Double, Double>(context));
+		context.setOptimizer(new PatternSearch<>(context, new UnivariatePattern()));
+		context.setIntegrator(new MCIntegrator<>(context));
 		context.setRng(2, new CommonRandomGenerator(2));
 		context.setUpdateRule(new UnivariateDampenedUpdateRule(0.2, 0.7, 0.5 / context.getDoubleParameter("epsilon"), true));
 		context.setBRC(new AdaptivePWLBRCalculator(context));
@@ -53,53 +53,50 @@ public class LLGFirstPrice {
 		bneAlgo.makeBidderSymmetric(1, 0);
 		
 		// create callback that prints out the local and global players' strategies after each iteration, and also forces the strategies to be monotone
-		BNEAlgorithmCallback<Double, Double> callback = new BNEAlgorithmCallback<Double, Double>() {
-			@Override
-			public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double, Double>> strategies, double epsilon) {	
-				// print out strategy
-				StringBuilder builder = new StringBuilder();
-				builder.append(String.format("%2d", iteration));
-				builder.append(String.format(" %7.6f  ", epsilon));
-				
-				int ngridpoints = 1000;
-				for (int i=0; i<=ngridpoints/2; i++) {
-					double v = strategies.get(2).getMaxValue() * i / ngridpoints;
-					builder.append(String.format("%5.4f",v));
-					builder.append(" ");
-					builder.append(String.format("%5.4f", strategies.get(0).getBid(v)));
-					builder.append(" ");
-					builder.append(String.format("%5.4f", strategies.get(2).getBid(v)));
-					builder.append("  ");
-				}
-				for (int i=ngridpoints/2; i<=ngridpoints; i++) {
-					double v = strategies.get(2).getMaxValue() * i / ngridpoints;
-					builder.append(String.format("%5.4f",v));
-					builder.append(" ");
-					builder.append("0.0000");
-					builder.append(" ");
-					builder.append(String.format("%5.4f", strategies.get(2).getBid(v)));
-					builder.append("  ");
-				}
-				System.out.println(builder.toString());
+		BNEAlgorithmCallback<Double, Double> callback = (iteration, type, strategies, epsilon) -> {
+            // print out strategy
+            StringBuilder builder = new StringBuilder();
+            builder.append(String.format("%2d", iteration));
+            builder.append(String.format(" %7.6f  ", epsilon));
 
-				// make the strategy monotone, so it can be inverted for importance sampling
-				for (int i=0; i<3; i+=2) {
-					UnivariatePWLStrategy s = (UnivariatePWLStrategy) strategies.get(i);
-					SortedMap<Double, Double> data = s.getData();
-					SortedMap<Double, Double> newdata = new TreeMap<>();
-					
-					double previousBid = 0.0;
-					for (Map.Entry<Double, Double> e : data.entrySet()) {
-						double v = e.getKey();
-						double bid = Math.max(previousBid + 1e-6, e.getValue());
-						newdata.put(v, bid);
-						previousBid = bid;
-					}
-					strategies.set(i, new UnivariatePWLStrategy(newdata));
-				}
-				strategies.set(1, strategies.get(0));				
-			}
-		};
+            int ngridpoints = 1000;
+            for (int i=0; i<=ngridpoints/2; i++) {
+                double v = strategies.get(2).getMaxValue() * i / ngridpoints;
+                builder.append(String.format("%5.4f",v));
+                builder.append(" ");
+                builder.append(String.format("%5.4f", strategies.get(0).getBid(v)));
+                builder.append(" ");
+                builder.append(String.format("%5.4f", strategies.get(2).getBid(v)));
+                builder.append("  ");
+            }
+            for (int i=ngridpoints/2; i<=ngridpoints; i++) {
+                double v = strategies.get(2).getMaxValue() * i / ngridpoints;
+                builder.append(String.format("%5.4f",v));
+                builder.append(" ");
+                builder.append("0.0000");
+                builder.append(" ");
+                builder.append(String.format("%5.4f", strategies.get(2).getBid(v)));
+                builder.append("  ");
+            }
+            System.out.println(builder.toString());
+
+            // make the strategy monotone, so it can be inverted for importance sampling
+            for (int i=0; i<3; i+=2) {
+                UnivariatePWLStrategy s = (UnivariatePWLStrategy) strategies.get(i);
+                SortedMap<Double, Double> data = s.getData();
+                SortedMap<Double, Double> newdata = new TreeMap<>();
+
+                double previousBid = 0.0;
+                for (Map.Entry<Double, Double> e : data.entrySet()) {
+                    double v = e.getKey();
+                    double bid = Math.max(previousBid + 1e-6, e.getValue());
+                    newdata.put(v, bid);
+                    previousBid = bid;
+                }
+                strategies.set(i, new UnivariatePWLStrategy(newdata));
+            }
+            strategies.set(1, strategies.get(0));
+        };
 		bneAlgo.setCallback(callback);
 		
 		bneAlgo.run();

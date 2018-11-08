@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import com.opencsv.CSVReader;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import au.com.bytecode.opencsv.CSVReader;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2DSymmetric;
 
