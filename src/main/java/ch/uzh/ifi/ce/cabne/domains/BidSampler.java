@@ -23,10 +23,6 @@ public abstract class BidSampler<Value, Bid> {
 		this.context = context;
 	}
 	
-	public BidSampler() {
-		
-	}
-	
 	public void setContext(BNESolverContext<Value, Bid> context) {
 		this.context = context;
 	}
