@@ -8,10 +8,15 @@ import ch.uzh.ifi.ce.cabne.domains.BidSampler;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
 
-public class NoImportanceFirstPriceLLGSampler extends BidSampler<Double, Double> {
+/* 
+ * Sampler that doesn't make use of importance sampling. Keep it here so that it's easy to assert the 
+ * correctness of the more complex sampler.
+ */
+
+public class NaiveFirstPriceLLGSampler extends BidSampler<Double, Double> {
 
 	
-	public NoImportanceFirstPriceLLGSampler(BNESolverContext<Double, Double> context) {
+	public NaiveFirstPriceLLGSampler(BNESolverContext<Double, Double> context) {
 		super(context);
 	}
 
