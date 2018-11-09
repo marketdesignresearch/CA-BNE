@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.cabne.domains.LLG.distributions;
 
 import org.apache.commons.math3.distribution.BetaDistribution;
 
+@SuppressWarnings("serial")
 public class BetaEpsilonRealDist extends BetaDistribution {
     private final double epsilon;
     private final double cdfCorrection;
