@@ -3,9 +3,9 @@ package ch.uzh.ifi.ce.cabne.strategy;
 /*
  * Strategy used for verification. It takes an arbitrary strategy, and converts it to a piecewise
  * constant one on a grid. The grid is spaced closer together for high valuations, as controlled 
- * by a factor in (0,1): the highest and second-highest grid points are spaced factor*avg apart from each other,
- * where avg is the distance they would be apart on a regular grid.
- *  
+ * by a factor in (0,1): the highest and second-highest grid points are spaced factor*avg apart from 
+ * each other, where avg is the distance they would be apart on a regular grid.
+ * 
  * This is the implementation in one dimension.
  */
 
