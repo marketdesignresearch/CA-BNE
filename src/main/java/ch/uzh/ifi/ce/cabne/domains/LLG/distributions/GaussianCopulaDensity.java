@@ -12,11 +12,11 @@ import java.util.stream.IntStream;
 /**
  * Created by buenz on 08.01.16.
  */
-public class GaussionCopulaDensity implements DensityFunction {
+public class GaussianCopulaDensity implements DensityFunction {
     private final RealMatrix inverseMinIdentity;
     private final double inverseSqrtDeterminant;
     private NormalDistribution sd = new NormalDistribution();
-    private final RealMatrix lowerCholstey;
+    private final RealMatrix lowerCholesky;
     private final static double EPSILON = 1e-8;
     private final static double ZERO = 1e-16;
 
@@ -24,11 +24,11 @@ public class GaussionCopulaDensity implements DensityFunction {
     private final RealDistribution[] densityFunctions;
     private final double[] upperBounds;
 
-    public GaussionCopulaDensity(RealMatrix covariance, String name) {
+    public GaussianCopulaDensity(RealMatrix covariance, String name) {
         this(covariance, name, new UniformRealDistribution(0, 1), new UniformRealDistribution(0, 1), new UniformRealDistribution(0, 2));
     }
 
-    public GaussionCopulaDensity(RealMatrix covariance, String name, RealDistribution... densityFunctions) {
+    public GaussianCopulaDensity(RealMatrix covariance, String name, RealDistribution... densityFunctions) {
         if (!covariance.isSquare() || covariance.getRowDimension() != densityFunctions.length) {
             throw new IllegalArgumentException("Wrong matrix dimensions");
         }
@@ -37,7 +37,7 @@ public class GaussionCopulaDensity implements DensityFunction {
         RealMatrix inverse = decomposition.getSolver().getInverse();
         inverseMinIdentity = inverse.subtract(MatrixUtils.createRealIdentityMatrix(covariance.getRowDimension()));
         inverseSqrtDeterminant = 1 / Math.sqrt(decomposition.getDeterminant());
-        lowerCholstey = new CholeskyDecomposition(covariance).getLT();
+        lowerCholesky = new CholeskyDecomposition(covariance).getLT();
         this.densityFunctions = densityFunctions;
         this.upperBounds = Arrays.stream(densityFunctions).mapToDouble(RealDistribution::getSupportUpperBound).toArray();
     }
@@ -83,7 +83,7 @@ public class GaussionCopulaDensity implements DensityFunction {
     @Override
     public double[] sample() {
         double z[] = sd.sample(inverseMinIdentity.getColumnDimension());
-        double[] x = lowerCholstey.preMultiply(z);
+        double[] x = lowerCholesky.preMultiply(z);
         double[] result = Arrays.stream(x).map(sd::cumulativeProbability).toArray();
         result[result.length - 1] *= 2;
         return result;
