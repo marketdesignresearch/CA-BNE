@@ -59,7 +59,7 @@ public class MCIntegrator<Value, Bid> extends Integrator<Value, Bid> {
 			}
 			
 		} else {
-			throw new RuntimeException("MCIntegrator does not support this type of Value");
+			throw new RuntimeException("MCIntegrator does not support this type of Bid.");
 		}
 
 		return result / nsamples;
