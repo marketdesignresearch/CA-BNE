@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import ch.uzh.ifi.ce.cabne.Helpers;
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
+import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
@@ -37,8 +37,8 @@ public class Grid2DBRCalculator implements BRCalculator<Double[], Double[]> {
 				Double[] oldbid = s.get(i).getBid(v);
 				
 				Optimizer.Result<Double[]> result = context.optimizer.findBR(i, v, oldbid, s);
-				epsilonAbs = Math.max(epsilonAbs, Helpers.absoluteUtilityLoss(result.oldutility, result.utility));
-				epsilonRel = Math.max(epsilonRel, Helpers.relativeUtilityLoss(result.oldutility, result.utility));
+				epsilonAbs = Math.max(epsilonAbs, UtilityHelpers.absoluteLoss(result.oldutility, result.utility));
+				epsilonRel = Math.max(epsilonRel, UtilityHelpers.relativeLoss(result.oldutility, result.utility));
 				Double[] newbid = context.updateRule.update(v, oldbid, result.bid, result.oldutility, result.utility);
 				left.setEntry(x, y, newbid[0]);
 				right.setEntry(x, y, newbid[1]);

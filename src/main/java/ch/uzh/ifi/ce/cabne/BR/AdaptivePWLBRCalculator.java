@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import ch.uzh.ifi.ce.cabne.Helpers;
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
+import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
@@ -47,8 +47,8 @@ public class AdaptivePWLBRCalculator implements BRCalculator<Double, Double> {
                 pointwiseBRs.put(v, newbid);
                 undampenedPointwiseBRs.put(v, result.bid);
 
-    			epsilonAbs = Math.max(epsilonAbs, Helpers.absoluteUtilityLoss(result.oldutility, result.utility));
-    			epsilonRel = Math.max(epsilonRel, Helpers.relativeUtilityLoss(result.oldutility, result.utility));
+    			epsilonAbs = Math.max(epsilonAbs, UtilityHelpers.absoluteLoss(result.oldutility, result.utility));
+    			epsilonRel = Math.max(epsilonRel, UtilityHelpers.relativeLoss(result.oldutility, result.utility));
             }
 
 

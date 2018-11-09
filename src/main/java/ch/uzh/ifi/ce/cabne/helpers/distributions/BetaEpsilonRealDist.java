@@ -1,4 +1,4 @@
-package ch.uzh.ifi.ce.cabne.domains.LLG.distributions;
+package ch.uzh.ifi.ce.cabne.helpers.distributions;
 
 import org.apache.commons.math3.distribution.BetaDistribution;
 

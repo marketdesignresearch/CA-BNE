@@ -3,8 +3,8 @@ package ch.uzh.ifi.ce.cabne.BR;
 import java.util.List;
 import java.util.TreeMap;
 
-import ch.uzh.ifi.ce.cabne.Helpers;
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
+import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
@@ -31,8 +31,8 @@ public class PWLBRCalculator implements BRCalculator<Double, Double> {
 			double v = maxValue * ((double) j) / (nPoints);
 			Double oldbid = s.get(i).getBid(v);
 			Optimizer.Result<Double> result = context.optimizer.findBR(i, v, oldbid, s);
-			epsilonAbs = Math.max(epsilonAbs, Helpers.absoluteUtilityLoss(result.oldutility, result.utility));
-			epsilonRel = Math.max(epsilonRel, Helpers.relativeUtilityLoss(result.oldutility, result.utility));
+			epsilonAbs = Math.max(epsilonAbs, UtilityHelpers.absoluteLoss(result.oldutility, result.utility));
+			epsilonRel = Math.max(epsilonRel, UtilityHelpers.relativeLoss(result.oldutility, result.utility));
 						
 			Double newbid = context.updateRule.update(v, oldbid, result.bid, result.oldutility, result.utility);
 			pointwiseBRs.put(v,  newbid);			

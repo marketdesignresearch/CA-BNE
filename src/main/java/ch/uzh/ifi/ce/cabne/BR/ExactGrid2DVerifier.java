@@ -7,8 +7,8 @@ import java.util.Map;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import ch.uzh.ifi.ce.cabne.Helpers;
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
+import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.ConstantGridStrategy2D;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
@@ -80,7 +80,7 @@ public class ExactGrid2DVerifier implements Verifier<Double[], Double[]> {
 
 				// compute epsilon bound on each 2d cell, then on the 1d boundaries, 
 				// then on the 0d boundary (i.e. topmost grid point)
-				double pointEpsilon = Helpers.absoluteUtilityLoss(result.oldutility, result.utility);
+				double pointEpsilon = UtilityHelpers.absoluteLoss(result.oldutility, result.utility);
 				if (j>0 && k>0) {
 					double epsilon = result.utility - results.get(j-1).get(k-1).utility + pointEpsilon;
 					cellEpsilon2D = Math.max(cellEpsilon2D, epsilon);

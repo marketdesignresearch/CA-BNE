@@ -2,7 +2,7 @@ package ch.uzh.ifi.ce.cabne.domains.FirstPriceLLG;
 
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
 import ch.uzh.ifi.ce.cabne.domains.BidSampler;
-import ch.uzh.ifi.ce.cabne.domains.LLG.distributions.DensityFunction;
+import ch.uzh.ifi.ce.cabne.helpers.distributions.DensityFunction;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
 

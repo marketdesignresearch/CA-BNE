@@ -1,15 +1,15 @@
-package ch.uzh.ifi.ce.cabne;
+package ch.uzh.ifi.ce.cabne.helpers;
 
-public final class Helpers {
+public final class UtilityHelpers {
 	
 	// Prevent instances from being created. This class should only be used via calls to static methods.
-	private Helpers() {}; 
+	private UtilityHelpers() {}; 
 
-	public static double absoluteUtilityLoss(double oldu, double newu) {
+	public static double absoluteLoss(double oldu, double newu) {
 		return newu - oldu;
 	}
 	
-	public static double relativeUtilityLoss(double oldu, double newu) {
+	public static double relativeLoss(double oldu, double newu) {
 		// NOTE: One way of defining relative utility loss in the [0, \infty) range is with the formula newu / oldu - 1.
 		// Semantics: increase of utility in %, e.g. triple utility is +200% ==> relative utility loss is 2
 		
@@ -20,11 +20,11 @@ public final class Helpers {
 		return newu / oldu - 1;
 	}
 	
-	public static double utilityLoss(double oldu, double newu, boolean useAbsolute) {
+	public static double loss(double oldu, double newu, boolean useAbsolute) {
 		if (useAbsolute) {
-			return Helpers.absoluteUtilityLoss(oldu, newu);
+			return UtilityHelpers.absoluteLoss(oldu, newu);
 		} else {
-			return Helpers.relativeUtilityLoss(oldu, newu);
+			return UtilityHelpers.relativeLoss(oldu, newu);
 		}
 	}
 }

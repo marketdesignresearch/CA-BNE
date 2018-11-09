@@ -2,8 +2,8 @@ package ch.uzh.ifi.ce.cabne.BR;
 
 import java.util.List;
 
-import ch.uzh.ifi.ce.cabne.Helpers;
 import ch.uzh.ifi.ce.cabne.algorithm.BNESolverContext;
+import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 
@@ -30,7 +30,7 @@ public class HeuristicUnivariateVerifier implements Verifier<Double, Double> {
 			Optimizer.Result<Double> result = context.optimizer.findBR(i, v, oldbid, s);
 
 			// epsilon at control point itself
-			double epsilon = Helpers.absoluteUtilityLoss(result.oldutility, result.utility);
+			double epsilon = UtilityHelpers.absoluteLoss(result.oldutility, result.utility);
 			highestEpsilon = Math.max(highestEpsilon, epsilon);
 		}
 		

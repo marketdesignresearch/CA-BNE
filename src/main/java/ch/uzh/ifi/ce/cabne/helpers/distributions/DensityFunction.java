@@ -1,4 +1,4 @@
-package ch.uzh.ifi.ce.cabne.domains.LLG.distributions;
+package ch.uzh.ifi.ce.cabne.helpers.distributions;
 
 /**
  * @author Benedikt Bünz (benedikt@cs.stanford.edu)

@@ -1,6 +1,6 @@
 package ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule;
 
-import ch.uzh.ifi.ce.cabne.Helpers;
+import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 
 public class UnivariateDampenedUpdateRule implements UpdateRule<Double, Double> {
 	double wMin, wMax;
@@ -22,7 +22,7 @@ public class UnivariateDampenedUpdateRule implements UpdateRule<Double, Double> 
         // Note that the update factor depends on epsilon, so for larger epsilon, it will switch into 
 		// "near to convergence" mode faster.
 		
-		double utilityLoss = Helpers.utilityLoss(oldutility, newutility, useAbsolute);
+		double utilityLoss = UtilityHelpers.loss(oldutility, newutility, useAbsolute);
         double w = 2 / Math.PI * Math.atan(c * utilityLoss) * (wMax - wMin) + wMin;
 
 		return oldbid * (1-w) + newbid * w;
