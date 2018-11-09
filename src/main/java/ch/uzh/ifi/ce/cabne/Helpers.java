@@ -1,6 +1,9 @@
 package ch.uzh.ifi.ce.cabne;
 
-public class Helpers {
+public final class Helpers {
+	
+	// Prevent instances from being created. This class should only be used via calls to static methods.
+	private Helpers() {}; 
 
 	public static double absoluteUtilityLoss(double oldu, double newu) {
 		return newu - oldu;
