@@ -22,6 +22,7 @@ public class TestingPatternSearch<Value, Bid> extends PatternSearch<Value, Bid> 
 	}
 
 	// this method assumes that we are optimizing over [0, \infty).
+	@SuppressWarnings("unchecked")
 	@Override
 	public Result<Bid> findBR(int i, Value v, Bid currentBid, List<Strategy<Value, Bid>> strats) {
 		int patternSize = context.getIntParameter("patternsearch.size");
