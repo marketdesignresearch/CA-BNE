@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
 
 import ch.uzh.ifi.ce.cabne.BR.ExactGrid2DVerifier;
 import ch.uzh.ifi.ce.cabne.BR.Grid2DBRCalculator;
@@ -21,7 +20,6 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.PatternSearch;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.MultivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
-import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 
 
 public class LLLLGGFirstPrice {
@@ -35,10 +33,9 @@ public class LLLLGGFirstPrice {
 		
 		double targetepsilon = context.getDoubleParameter("epsilon");
 
-		
 		// initialize all algorithm pieces
 		context.setOptimizer(new PatternSearch<>(context, new MultivariateCrossPattern(2)));
-		context.setIntegrator(new MCIntegrator<Double[], Double[]>(context));
+		context.setIntegrator(new MCIntegrator<>(context));
 		context.setRng(10, new CommonRandomGenerator(10));
 		context.setUpdateRule(new MultivariateDampenedUpdateRule<>(0.2, 0.7, 0.5 / targetepsilon, true));
 		context.setBRC(new Grid2DBRCalculator(context));
@@ -64,23 +61,20 @@ public class LLLLGGFirstPrice {
 		bneAlgo.makeBidderSymmetric(5, 4);
 		
 		// create callback that reports epsilon after each iteration
-		BNEAlgorithmCallback<Double[], Double[]> callback = new BNEAlgorithmCallback<Double[], Double[]>() {
-			@Override
-			public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double[], Double[]>> strategies, double epsilon) {	
-				System.out.format("iteration: %d, type %s, epsilon %7.6f\n", iteration, type, epsilon);
-				String s = writer.write((GridStrategy2D) strategies.get(0), (GridStrategy2D) strategies.get(4), iteration);
-				
-				Path outputFile = Paths.get(args[1]).resolve(String.format("iter%03d.strats", iteration));
+		BNEAlgorithmCallback<Double[], Double[]> callback = (iteration, type, strategies, epsilon) -> {	
+			System.out.format("iteration: %d, type %s, epsilon %7.6f\n", iteration, type, epsilon);
+			String s = writer.write((GridStrategy2D) strategies.get(0), (GridStrategy2D) strategies.get(4), iteration);
+			
+			Path outputFile = Paths.get(args[1]).resolve(String.format("iter%03d.strats", iteration));
 
-				try {
-					Files.write(
-						outputFile, s.getBytes(), 
-						StandardOpenOption.CREATE, 
-						StandardOpenOption.WRITE, 
-						StandardOpenOption.TRUNCATE_EXISTING
-					);
-				} catch (IOException e) {
-				}
+			try {
+				Files.write(
+					outputFile, s.getBytes(), 
+					StandardOpenOption.CREATE, 
+					StandardOpenOption.WRITE, 
+					StandardOpenOption.TRUNCATE_EXISTING
+				);
+			} catch (IOException e) {
 			}
 		};
 		bneAlgo.setCallback(callback);

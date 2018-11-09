@@ -1,7 +1,6 @@
 package ch.uzh.ifi.ce.cabne.examples;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -19,7 +18,6 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.PatternSearch;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.UnivariatePattern;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.UnivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
-import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
 
 
