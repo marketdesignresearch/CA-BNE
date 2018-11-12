@@ -10,6 +10,15 @@ import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.verification.Verifier;
 
 public class BNEAlgorithm<Value, Bid> {
+	public static class Result<Value, Bid> {
+		public double epsilon;
+		public List<Strategy<Value, Bid>> equilibriumStrategies;
+		
+		public Result(double epsilon, List<Strategy<Value, Bid>> equilibriumStrategies) {
+			this.epsilon = epsilon;
+			this.equilibriumStrategies = equilibriumStrategies;
+		}
+	}
 
 	public enum IterationType {INNER, OUTER, VERIFICATION};
 	
@@ -64,32 +73,32 @@ public class BNEAlgorithm<Value, Bid> {
 		}	
 	}
 	
-	private double computeBestResponse(List<Strategy<Value, Bid>> strategies, BRCalculator<Value, Bid> brc) {
+	private double playOneRound(List<Strategy<Value, Bid>> strategies, BRCalculator<Value, Bid> brc) {
 		double highestEpsilon = 0.0;
 		
 		// compute best responses for players where this is needed
-		Map<Integer, Strategy<Value, Bid>> newStrategies = new HashMap<>();
+		Map<Integer, Strategy<Value, Bid>> bestResponseMap = new HashMap<>();
 		for (int i=0; i<nBidders; i++) {
 			if (canonicalBidders[i] == i && updateBidder[i]) {
 				// this is a canonical bidder whose strategy should be updated
 				BRCalculator.Result<Value, Bid> result = brc.computeBR(i, strategies);
 				Strategy<Value, Bid> s = result.br;	
 				highestEpsilon = Math.max(highestEpsilon, result.epsilonAbs);
-				newStrategies.put(i, s);
+				bestResponseMap.put(i, s);
 			}
 		}
 
-		// update strategies
+		// update strategies in place
 		for (int i=0; i<nBidders; i++) {
 			if (updateBidder[i]) {
-				strategies.set(i, newStrategies.get(canonicalBidders[i]));
+				strategies.set(i, bestResponseMap.get(canonicalBidders[i]));
 			}
 		}
 		
 		return highestEpsilon;
 	}	
 	
-	private double verify(List<Strategy<Value, Bid>> strategies, Verifier<Value, Bid> verifier) {
+	private Result<Value, Bid> verify(List<Strategy<Value, Bid>> strategies, Verifier<Value, Bid> verifier) {
 		double highestEpsilon = 0.0;
 		int gridsize = context.getIntParameter("gridsize");
 		
@@ -113,10 +122,10 @@ public class BNEAlgorithm<Value, Bid> {
 			}
 		}
 		
-		return highestEpsilon;
+		return new Result<>(highestEpsilon, sConverted);
 	}
 
-	public void run() {
+	public Result<Value, Bid> run() {
 
 		int maxIters = context.getIntParameter("maxiters");
 		double targetEpsilon = context.getDoubleParameter("epsilon");
@@ -142,7 +151,8 @@ public class BNEAlgorithm<Value, Bid> {
 				context.activateConfig("innerloop");
 				brc = context.brc;
 				
-				highestEpsilon = computeBestResponse(strategies, brc);
+				// Note that playOneRound updates the strategies in place.
+				highestEpsilon = playOneRound(strategies, brc);
 				context.advanceRngs();
 				
 				callbackAfterIteration(iteration, IterationType.INNER, strategies, highestEpsilon);
@@ -154,7 +164,7 @@ public class BNEAlgorithm<Value, Bid> {
 			}
 			
 			if (iteration > maxIters) {
-				return;
+				return new Result<>(Double.POSITIVE_INFINITY, strategies);
 			}
 						
 			lastOuterIteration = iteration;
@@ -162,10 +172,10 @@ public class BNEAlgorithm<Value, Bid> {
 			context.activateConfig("outerloop");
 			brc = context.outerBRC;
 			if (brc == null) {
-				return;
+				return new Result<>(Double.POSITIVE_INFINITY, strategies);
 			}
 			
-			highestEpsilon = computeBestResponse(strategies, brc);
+			highestEpsilon = playOneRound(strategies, brc);
 			context.advanceRngs();
 			
 			callbackAfterIteration(iteration, IterationType.OUTER, strategies, highestEpsilon);
@@ -175,18 +185,14 @@ public class BNEAlgorithm<Value, Bid> {
 				break;
 			}
 		}
-		
-		boolean converged = highestEpsilon <= targetEpsilon;
-		if (converged) {
-			context.activateConfig("verificationstep");
-			if (context.verifier == null) {
-				return;
-			}
 
-			highestEpsilon = verify(strategies, context.verifier);
-
-			callbackAfterIteration(iteration, IterationType.VERIFICATION, strategies, highestEpsilon);
+		context.activateConfig("verificationstep");
+		boolean outerloopConverged = highestEpsilon <= targetEpsilon;
+		if (context.verifier == null || !outerloopConverged) {
+			return new Result<>(Double.POSITIVE_INFINITY, strategies);
 		}
+		Result<Value, Bid> result = verify(strategies, context.verifier);
+		callbackAfterIteration(iteration, IterationType.VERIFICATION, result.equilibriumStrategies, result.epsilon);
+		return result;
     }
-	
 }

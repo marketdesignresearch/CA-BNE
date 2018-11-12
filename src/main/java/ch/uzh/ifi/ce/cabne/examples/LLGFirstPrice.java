@@ -97,6 +97,8 @@ public class LLGFirstPrice {
         };
 		bneAlgo.setCallback(callback);
 		
-		bneAlgo.run();
+		BNEAlgorithm.Result<Double, Double> result;
+		result = bneAlgo.run();
+		System.out.format("Algorithm finished with eps=%f", result.epsilon);
     }
 }
