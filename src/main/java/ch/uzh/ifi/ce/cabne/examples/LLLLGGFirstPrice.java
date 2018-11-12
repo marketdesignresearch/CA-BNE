@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import ch.uzh.ifi.ce.cabne.BR.ExactGrid2DVerifier;
 import ch.uzh.ifi.ce.cabne.BR.Grid2DBRCalculator;
 import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithm;
 import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithmCallback;
@@ -20,6 +19,7 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.PatternSearch;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.MultivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
+import ch.uzh.ifi.ce.cabne.verification.ExactGrid2DVerifier;
 
 
 public class LLLLGGFirstPrice {

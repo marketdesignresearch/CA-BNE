@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import ch.uzh.ifi.ce.cabne.BR.BRCalculator;
-import ch.uzh.ifi.ce.cabne.BR.Verifier;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
+import ch.uzh.ifi.ce.cabne.verification.Verifier;
 
 public class BNEAlgorithm<Value, Bid> {
 

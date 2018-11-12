@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import ch.uzh.ifi.ce.cabne.BR.AdaptivePWLBRCalculator;
-import ch.uzh.ifi.ce.cabne.BR.ExactUnivariateVerifier;
 import ch.uzh.ifi.ce.cabne.BR.PWLBRCalculator;
 import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithm;
 import ch.uzh.ifi.ce.cabne.algorithm.BNEAlgorithmCallback;
@@ -17,6 +16,7 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.UnivariatePattern;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.UnivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
+import ch.uzh.ifi.ce.cabne.verification.ExactUnivariateVerifier;
 
 
 public class LLGQuadratic {

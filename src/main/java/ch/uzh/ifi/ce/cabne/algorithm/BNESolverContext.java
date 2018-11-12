@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Scanner;
 
 import ch.uzh.ifi.ce.cabne.BR.BRCalculator;
-import ch.uzh.ifi.ce.cabne.BR.Verifier;
 import ch.uzh.ifi.ce.cabne.domains.BidSampler;
 import ch.uzh.ifi.ce.cabne.domains.Mechanism;
 import ch.uzh.ifi.ce.cabne.integration.Integrator;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.UpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.RandomGenerator;
+import ch.uzh.ifi.ce.cabne.verification.Verifier;
 
 public class BNESolverContext<Value, Bid> {
 	public HashMap<String, String> config;

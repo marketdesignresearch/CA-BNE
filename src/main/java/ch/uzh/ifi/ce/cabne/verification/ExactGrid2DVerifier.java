@@ -1,4 +1,4 @@
-package ch.uzh.ifi.ce.cabne.BR;
+package ch.uzh.ifi.ce.cabne.verification;
 
 import java.util.HashMap;
 import java.util.List;
