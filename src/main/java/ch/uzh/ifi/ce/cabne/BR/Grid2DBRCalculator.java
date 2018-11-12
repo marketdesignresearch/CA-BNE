@@ -11,9 +11,10 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 
-// Note: This is the same as PWLBRCalculator except it has Double[] as bids instead of Double, so it uses a 
-// different Strategy
-
+/*
+ * Best response calculator which assumes that values and bids are 2-dimensional arrays of Doubles.
+ * Constructs a GridStrategy2D as the best response.
+ */
 public class Grid2DBRCalculator implements BRCalculator<Double[], Double[]> {
 	BNESolverContext<Double[], Double[]> context;
 
