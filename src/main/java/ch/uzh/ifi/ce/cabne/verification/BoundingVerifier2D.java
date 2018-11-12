@@ -13,28 +13,26 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.ConstantGridStrategy2D;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 
-public class ExactGrid2DVerifier implements Verifier<Double[], Double[]> {
+public class BoundingVerifier2D implements Verifier<Double[], Double[]> {
 	BNESolverContext<Double[], Double[]> context;
 	
-
-	public ExactGrid2DVerifier(BNESolverContext<Double[], Double[]> context) {
+	public BoundingVerifier2D(BNESolverContext<Double[], Double[]> context) {
 		super();
 		this.context = context;
 	}
 
-
-	public Strategy<Double[], Double[]> convertStrategy(int nPoints, Strategy<Double[], Double[]> s) {
+	public Strategy<Double[], Double[]> convertStrategy(int gridsize, Strategy<Double[], Double[]> s) {
 		Double[] maxValue = s.getMaxValue();
 
-		double[][] left = new double[nPoints][];
-		double[][] right = new double[nPoints][];
-		for (int j=0; j<nPoints; j++) {
-			left[j] = new double[nPoints];
-			right[j] = new double[nPoints];
-			for (int k=0; k<nPoints; k++) {
+		double[][] left = new double[gridsize][];
+		double[][] right = new double[gridsize][];
+		for (int j=0; j<gridsize; j++) {
+			left[j] = new double[gridsize];
+			right[j] = new double[gridsize];
+			for (int k=0; k<gridsize; k++) {
 				Double[] value = new Double[]{
-						maxValue[0] * ((double) j) / (nPoints),
-						maxValue[1] * ((double) k) / (nPoints)
+						maxValue[0] * ((double) j) / (gridsize),
+						maxValue[1] * ((double) k) / (gridsize)
 						};
 				Double[] bid = s.getBid(value);
 				left[j][k] = bid[0];
@@ -44,9 +42,7 @@ public class ExactGrid2DVerifier implements Verifier<Double[], Double[]> {
 		RealMatrix mLeft = MatrixUtils.createRealMatrix(left);
 		RealMatrix mRight = MatrixUtils.createRealMatrix(right);
 		return new ConstantGridStrategy2D(mLeft, mRight, maxValue[0], maxValue[1]);
-
 	}
-	
 	
 	@Override
 	public double computeEpsilon(int gridsize, int i, Strategy<Double[], Double[]> si, List<Strategy<Double[], Double[]>> s) {	
@@ -98,8 +94,6 @@ public class ExactGrid2DVerifier implements Verifier<Double[], Double[]> {
 				}
 			}
 		}
-		
 		return Math.max(Math.max(cellEpsilon2D, boundaryEpsilon1D), boundaryEpsilon0D);
 	}
-
 }

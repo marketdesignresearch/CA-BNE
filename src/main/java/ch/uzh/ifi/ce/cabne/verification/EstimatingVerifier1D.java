@@ -7,11 +7,11 @@ import ch.uzh.ifi.ce.cabne.helpers.UtilityHelpers;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 
-public class HeuristicUnivariateVerifier implements Verifier<Double, Double> {
+public class EstimatingVerifier1D implements Verifier<Double, Double> {
 	
 	BNESolverContext<Double, Double> context;
 
-	public HeuristicUnivariateVerifier(BNESolverContext<Double, Double> context) {
+	public EstimatingVerifier1D(BNESolverContext<Double, Double> context) {
 		super();
 		this.context = context;
 	}

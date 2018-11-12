@@ -19,7 +19,7 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.PatternSearch;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.MultivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
 import ch.uzh.ifi.ce.cabne.strategy.GridStrategy2D;
-import ch.uzh.ifi.ce.cabne.verification.ExactGrid2DVerifier;
+import ch.uzh.ifi.ce.cabne.verification.BoundingVerifier2D;
 
 
 public class LLLLGGFirstPrice {
@@ -40,7 +40,7 @@ public class LLLLGGFirstPrice {
 		context.setUpdateRule(new MultivariateDampenedUpdateRule<>(0.2, 0.7, 0.5 / targetepsilon, true));
 		context.setBRC(new Grid2DBRCalculator(context));
 		context.setOuterBRC(new Grid2DBRCalculator(context));
-		context.setVerifier(new ExactGrid2DVerifier(context));
+		context.setVerifier(new BoundingVerifier2D(context));
 		
 		// instanciate auction setting
 		context.setMechanism(new LLLLGGPayAsBid());

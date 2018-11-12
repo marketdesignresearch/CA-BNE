@@ -16,7 +16,7 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.UnivariatePattern;
 import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.UnivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
-import ch.uzh.ifi.ce.cabne.verification.ExactUnivariateVerifier;
+import ch.uzh.ifi.ce.cabne.verification.BoundingVerifier1D;
 
 
 public class LLGQuadratic {
@@ -35,7 +35,7 @@ public class LLGQuadratic {
 		context.setUpdateRule(new UnivariateDampenedUpdateRule(0.2, 0.7, 0.5 / context.getDoubleParameter("epsilon"), true));
 		context.setBRC(new AdaptivePWLBRCalculator(context));
 		context.setOuterBRC(new PWLBRCalculator(context));
-		context.setVerifier(new ExactUnivariateVerifier(context));
+		context.setVerifier(new BoundingVerifier1D(context));
 		//context.setVerifier(new HeuristicUnivariateVerifier(context));
 		
 		// instanciate auction setting

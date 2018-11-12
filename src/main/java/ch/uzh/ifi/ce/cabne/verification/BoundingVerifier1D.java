@@ -9,11 +9,11 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.Optimizer;
 import ch.uzh.ifi.ce.cabne.strategy.Strategy;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWCStrategy;
 
-public class ExactUnivariateVerifier implements Verifier<Double, Double> {
+public class BoundingVerifier1D implements Verifier<Double, Double> {
 	
 	BNESolverContext<Double, Double> context;
 
-	public ExactUnivariateVerifier(BNESolverContext<Double, Double> context) {
+	public BoundingVerifier1D(BNESolverContext<Double, Double> context) {
 		super();
 		this.context = context;
 	}
