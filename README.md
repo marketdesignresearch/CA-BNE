@@ -22,60 +22,59 @@ To demonstrate how to configure our algorithm, we include an example of the LLG 
 
 First, we create a "BNESolverContext" object, which will contain all the objects making up our algorithm, and read in a configuration file. This class, as well as almost all other classes, is instanciated with two generic parameters, corresponding to the representation of values and bids.
 
-	  BNESolverContext<Double, Double> context = new BNESolverContext<>();
-	  String configfile = args[0];
-	  context.parseConfig(configfile);
+	BNESolverContext<Double, Double> context = new BNESolverContext<>();
+	String configfile = args[0];
+	context.parseConfig(configfile);
 
 Then, we add all the pieces needed to specify the algorithm, from the way best responses are computed to how the strategies are updated.
 
-	  context.setOptimizer(new PatternSearch<Double, Double>(context, new UnivariatePattern()));
-	  context.setIntegrator(new MCIntegrator<Double, Double>(context));
-	  context.setRng(2, new CommonRandomGenerator(2));
-	  context.setUpdateRule(new UnivariateDampenedUpdateRule(0.2, 0.7, 0.5 / context.getDoubleParameter("epsilon"), true));
-	  context.setBRC(new AdaptivePWLBRCalculator(context));
-	  context.setOuterBRC(new PWLBRCalculator(context));
-	  context.setVerifier(new ExactUnivariateVerifier(context));
+	context.setOptimizer(new PatternSearch<>(context, new UnivariatePattern()));
+	context.setIntegrator(new MCIntegrator<>(context));
+	context.setRng(2, new CommonRandomGenerator(2));
+	context.setUpdateRule(new UnivariateDampenedUpdateRule(0.2, 0.7, 0.5 / context.getDoubleParameter("epsilon"), true));
+	context.setBRC(new AdaptivePWLBRCalculator(context));
+	context.setOuterBRC(new PWLBRCalculator(context));
+	context.setVerifier(new BoundingVerifier1D(context));
 
 Then, we add the objects representing the auction setting
 
-	  context.setMechanism(new Quadratic());
-	  context.setSampler(new UniformLLGSampler(context));
+	context.setMechanism(new Quadratic());
+	context.setSampler(new LLGSampler(context));
 
 We instantiate the BNE algorithm for an auction with 3 players and the given context.
 
-	  BNEAlgorithm<Double, Double> bneAlgo = new BNEAlgorithm<>(3, context);
+	BNEAlgorithm<Double, Double> bneAlgo = new BNEAlgorithm<>(3, context);
 
 We set the initial strategies for the bidders to be truthful. Bidder 1 (the second local bidder) is in a position symmetric to bidder 0 (the first local bidder), so we make him play bidder 0's strategy. The global bidder is known to bid truthful [Beck and Ott, 2013], so we don't update his strategy. This results in the algorithm only updating bidder 0's strategy each round.
 
-	 bneAlgo.setInitialStrategy(0, UnivariatePWLStrategy.makeTruthful(0.0, 1.0));
-	 bneAlgo.setInitialStrategy(2, UnivariatePWLStrategy.makeTruthful(0.0, 2.0));
-	 bneAlgo.makeBidderSymmetric(1, 0);
-	 bneAlgo.makeBidderNonUpdating(2);
+	bneAlgo.setInitialStrategy(0, UnivariatePWLStrategy.makeTruthful(0.0, 1.0));
+	bneAlgo.setInitialStrategy(2, UnivariatePWLStrategy.makeTruthful(0.0, 2.0));
+	bneAlgo.makeBidderSymmetric(1, 0);
+	bneAlgo.makeBidderNonUpdating(2);
 
 To actually see what's going on during the algorithm's execution, we implement a special callback interface that gets invoked after each iteration. In this example, we will just output the intermediate strategies computed for bidder 0, along with the estimated epsilon.
 
-	 BNEAlgorithmCallback<Double, Double> callback = new BNEAlgorithmCallback<Double, Double>() {
-		@Override
-		public void afterIteration(int iteration, BNEAlgorithm.IterationType type, List<Strategy<Double, Double>> strategies, double epsilon) {
-			StringBuilder builder = new StringBuilder();
-			builder.append(String.format("%2d", iteration));
-			builder.append(String.format(" %7.6f  ", epsilon));
-	
-			UnivariatePWLStrategy sPWL = (UnivariatePWLStrategy) strategies.get(0);
-			for (Map.Entry<Double, Double> e : sPWL.getData().entrySet()) {
-				builder.append(String.format("%7.6f",e.getKey()));
-				builder.append(" ");
-				builder.append(String.format("%7.6f",e.getValue()));
-				builder.append("  ");
-			}
-			System.out.println(builder.toString());
-	 	}
-	 };
-	 bneAlgo.setCallback(callback);
+	BNEAlgorithmCallback<Double, Double> callback = (iteration, type, strategies, epsilon) -> {
+		// print out strategy
+		StringBuilder builder = new StringBuilder();
+		builder.append(String.format("%2d", iteration));
+		builder.append(String.format(" %7.6f  ", epsilon));
+
+		// cast s to UnivariatePWLStrategy to get access to underlying data structure.
+		UnivariatePWLStrategy sPWL = (UnivariatePWLStrategy) strategies.get(0);
+		for (Map.Entry<Double, Double> e : sPWL.getData().entrySet()) {
+			builder.append(String.format("%7.6f",e.getKey()));
+			builder.append(" ");
+			builder.append(String.format("%7.6f",e.getValue()));
+			builder.append("  ");
+		}
+		System.out.println(builder.toString());
+	};
 
 Finally, we run the algorithm
 
-	 bneAlgo.run();
+	BNEAlgorithm.Result<Double, Double> result;
+	result = bneAlgo.run();
 
 The full example can be found [here](src/ch/uzh/ifi/ce/cabne/examples/LLGQuadratic.java). It takes as input a path pointing to a configuration file, e.g. [LLG.config](config/LLG.config).
 The output can be visualized using the following [Python script](misc/scripts/llg_anim_BNE.py). The computed BNE should look something like this:
