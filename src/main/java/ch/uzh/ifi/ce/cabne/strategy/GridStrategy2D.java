@@ -37,7 +37,7 @@ public class GridStrategy2D implements Strategy<Double[], Double[]> {
 
     public Double[] getBid(Double[] v) {
         double leftStrategy = computeStrategy(v[0], v[1], leftData);
-        double rightStrategy = computeStrategy(v[0],v[1], rightData);
+        double rightStrategy = computeStrategy(v[0], v[1], rightData);
         return new Double[]{leftStrategy, rightStrategy};
     }
 

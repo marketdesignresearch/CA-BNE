@@ -14,16 +14,10 @@ public class ConstantGridStrategy2D extends GridStrategy2D {
     public ConstantGridStrategy2D(RealMatrix leftIntervals, RealMatrix rightIntervals) {
     	this(leftIntervals, rightIntervals,  1.0,  1.0);
     }
-    
-    public ConstantGridStrategy2D(GridStrategy2D strat) {
-    	this(strat.leftIntervals, strat.rightIntervals);
-        this.rowInterval = strat.rowInterval;
-        this.columnInterval = strat.columnInterval;
-    }
 
     public Double[] getBid(Double[] v) {
         double leftStrategy = computeStrategy(v[0], v[1], leftIntervals);
-        double rightStrategy = computeStrategy(v[0],v[1], rightIntervals);
+        double rightStrategy = computeStrategy(v[0], v[1], rightIntervals);
         return new Double[]{leftStrategy, rightStrategy};
     }
 
