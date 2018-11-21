@@ -17,6 +17,7 @@ import ch.uzh.ifi.ce.cabne.pointwiseBR.updateRule.UnivariateDampenedUpdateRule;
 import ch.uzh.ifi.ce.cabne.randomsampling.CommonRandomGenerator;
 import ch.uzh.ifi.ce.cabne.strategy.UnivariatePWLStrategy;
 import ch.uzh.ifi.ce.cabne.verification.BoundingVerifier1D;
+import ch.uzh.ifi.ce.cabne.verification.EstimatingVerifier1D;
 
 
 public class LLGQuadratic {
@@ -36,7 +37,7 @@ public class LLGQuadratic {
 		context.setBRC(new AdaptivePWLBRCalculator(context));
 		context.setOuterBRC(new PWLBRCalculator(context));
 		context.setVerifier(new BoundingVerifier1D(context));
-		//context.setVerifier(new HeuristicUnivariateVerifier(context));
+		//context.setVerifier(new EstimatingVerifier1D(context));
 		
 		// instanciate auction setting
 		context.setMechanism(new Quadratic());
@@ -72,10 +73,10 @@ public class LLGQuadratic {
 			// alternatively, just sample the strategy on a regular grid.
 			/*
 			for (int i=0; i<=100; i++) {
-				double v = s.getMaxValue() * i / ((double) gridSize);
+				double v = strategies.get(0).getMaxValue() * i / ((double) 100);
 				builder.append(String.format("%7.6f",v));
 				builder.append(" ");
-				builder.append(String.format("%7.6f",s.getBid(v)));
+				builder.append(String.format("%7.6f",strategies.get(0).getBid(v)));
 				builder.append("  ");
 			}
 			*/
@@ -85,6 +86,5 @@ public class LLGQuadratic {
 		
 		BNEAlgorithm.Result<Double, Double> result;
 		result = bneAlgo.run();
-		System.out.format("Algorithm finished with eps=%f", result.epsilon);
     }
 }
