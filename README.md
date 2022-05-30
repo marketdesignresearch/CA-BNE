@@ -3,7 +3,8 @@
 
 This is a piece of software used for numerically computing approximate Bayes-Nash equilibria (ε-BNEs) of combinatorial auctions. Our algorithm is described in detail in the following paper:
 
-[[**Computing Bayes-Nash Equilibria in Combinatorial Auctions with Verification**](https://jair.org/index.php/jair/article/view/11525)]
+[**Computing Bayes-Nash Equilibria in Combinatorial Auctions with Verification**](https://jair.org/index.php/jair/article/view/11525)
+
 Vitor Bosshard, Benedikt Bünz, Benjamin Lubin, and Sven Seuken. JAIR 69 (2020):531-570
 
 If you use this software for academic purposes, please cite the above in your work.  Bibtex for this reference is as follows:
