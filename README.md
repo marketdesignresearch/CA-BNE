@@ -3,18 +3,19 @@
 
 This is a piece of software used for numerically computing approximate Bayes-Nash equilibria (ε-BNEs) of combinatorial auctions. Our algorithm is described in detail in the following paper:
 
-**Computing Bayes-Nash Equilibria in Combinatorial Auctions with Continuous Value and Action Spaces**  
-Vitor Bosshard, Benedikt Bünz, Benjamin Lubin, and Sven Seuken. In Proceedings of the 26th International Joint Conference on Artificial Intelligence (IJCAI), Melbourne, Australia, August 2017. [[pdf](http://www.ifi.uzh.ch/ce/publications/BNE_Bosshard_et_al_IJCAI_2017-long.pdf)]
+[[**Computing Bayes-Nash Equilibria in Combinatorial Auctions with Verification**](https://jair.org/index.php/jair/article/view/11525)]
+Vitor Bosshard, Benedikt Bünz, Benjamin Lubin, and Sven Seuken. JAIR 69 (2020):531-570
 
 If you use this software for academic purposes, please cite the above in your work.  Bibtex for this reference is as follows:
 
 ```
-@inproceedings{bosshard2017computing,
-  title={Computing bayes-nash equilibria in combinatorial auctions with continuous value and action spaces},
-  author={Bosshard, Vitor and B{\"u}nz, Benedikt and Lubin, Benjamin and Seuken, Sven},
-  booktitle={Proceedings of the 26th International Joint Conference on Artificial Intelligence (IJCAI)},
-  address={Melbourne, Australia},
-  year={2017}
+@Article{Bosshard2020computing,
+  author  = {Vitor Bosshard and Benedikt B\"{u}nz and Benjamin Lubin and Sven Seuken},
+  title   = {Computing Bayes-Nash Equilibria in Combinatorial Auctions with Verification},
+  journal = {Journal of Artificial Intelligence Research},
+  year    = {2020},
+  volume  = {69},
+  pages   = {531--570},
 }
 ```
 
